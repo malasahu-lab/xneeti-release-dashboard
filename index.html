@@ -54,10 +54,7 @@
   }
   .brand-name { font-size: 13px; font-weight: 800; letter-spacing: 0.02em; color: var(--ink); line-height: 1.15; }
   .brand-sub { font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.08em; }
-  .live-indicator { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 7px 14px 7px 11px; }
-  .live-indicator .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); flex-shrink: 0; animation: pulse 2.2s ease-in-out infinite; }
-  .live-indicator span.txt { font-size: 12px; font-weight: 600; color: var(--ink-secondary); }
-  @media (prefers-reduced-motion: reduce) { .live-indicator .dot { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
   @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(51, 209, 122, 0.35); } 50% { box-shadow: 0 0 0 6px transparent; } }
 
   header.top { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
@@ -193,7 +190,6 @@
         <div class="brand-sub">Release Management</div>
       </div>
     </div>
-    <div class="live-indicator"><span class="dot"></span><span class="txt">Auto-refreshing every 45s · <span id="sourceLabel">loading…</span></span></div>
   </div>
 
   <header class="top">
@@ -314,7 +310,6 @@
     if (useDb) {
       try {
         RELEASES = (await fetchFromDb()).map(normalise);
-        setSourceLabel("Supabase");
         render();
         return;
       } catch (e) {
@@ -326,17 +321,10 @@
 
     try {
       RELEASES = (await fetchFromFile()).map(normalise);
-      setSourceLabel(useDb ? "static file (DB unreachable)" : "static file");
     } catch (e) {
       console.error("Failed to load releases from any source", e);
-      if (!RELEASES.length) setSourceLabel("unavailable");
     }
     render();
-  }
-
-  function setSourceLabel(txt) {
-    const el = document.getElementById("sourceLabel");
-    if (el) el.textContent = txt;
   }
 
   const RISK = {
