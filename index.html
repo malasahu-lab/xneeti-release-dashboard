@@ -193,7 +193,7 @@
         <div class="brand-sub">Release Management</div>
       </div>
     </div>
-    <div class="live-indicator"><span class="dot"></span><span class="txt">Auto-refreshing every 45s</span></div>
+    <div class="live-indicator"><span class="dot"></span><span class="txt">Auto-refreshing every 45s · <span id="sourceLabel">loading…</span></span></div>
   </div>
 
   <header class="top">
@@ -257,15 +257,86 @@
 <script>
   let RELEASES = [];
 
+  // Data source. Leave url/anonKey blank to read the committed releases.json
+  // instead — that is the fallback path and stays working either way.
+  // The anon key is public by design; read access is all RLS grants it.
+  const SUPABASE = {
+    url: "",       // e.g. https://abcdefgh.supabase.co
+    anonKey: "",
+  };
+
+  const PIPELINE_LABEL = {
+    frontend: "Frontend",
+    ecs: "Backend (ECS)",
+    ec2: "Backend (EC2 + Scheduler)",
+  };
+
+  // The DB view and the JSON file name a few fields differently. Normalise both
+  // into the one shape the render code below expects.
+  function normalise(row) {
+    return {
+      id: row.id,
+      component: row.component,
+      component_label: row.component_label || PIPELINE_LABEL[row.pipeline] || row.component,
+      version: row.version,
+      deployed_at: row.deployed_at,
+      deployed_by: row.deployed_by,
+      commit: row.commit || row.commit_sha || "",
+      ref: row.ref || row.git_ref || "master",
+      ref_inferred: !!row.ref_inferred,
+      run_url: row.run_url || null,
+      risk_tag: row.risk_tag,
+      status: row.status || "success",
+      overview: row.overview || "",
+      highlights: row.highlights || [],
+    };
+  }
+
+  async function fetchFromDb() {
+    const res = await fetch(
+      `${SUPABASE.url}/rest/v1/release_feed?select=*&order=deployed_at.desc`,
+      { headers: { apikey: SUPABASE.anonKey, Authorization: `Bearer ${SUPABASE.anonKey}` },
+        cache: "no-store" }
+    );
+    if (!res.ok) throw new Error(`Supabase responded ${res.status}`);
+    return res.json();
+  }
+
+  async function fetchFromFile() {
+    const res = await fetch("./releases.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`releases.json responded ${res.status}`);
+    return (await res.json()).releases || [];
+  }
+
   async function loadReleases() {
+    const useDb = Boolean(SUPABASE.url && SUPABASE.anonKey);
+
+    if (useDb) {
+      try {
+        RELEASES = (await fetchFromDb()).map(normalise);
+        setSourceLabel("Supabase");
+        render();
+        return;
+      } catch (e) {
+        // Free-tier projects pause when idle, so treat a DB miss as expected
+        // and fall through to the committed mirror rather than blanking.
+        console.warn("Supabase unavailable, falling back to releases.json", e);
+      }
+    }
+
     try {
-      const res = await fetch("./releases.json", { cache: "no-store" });
-      const data = await res.json();
-      RELEASES = data.releases || [];
+      RELEASES = (await fetchFromFile()).map(normalise);
+      setSourceLabel(useDb ? "static file (DB unreachable)" : "static file");
     } catch (e) {
-      console.error("Failed to load releases.json", e);
+      console.error("Failed to load releases from any source", e);
+      if (!RELEASES.length) setSourceLabel("unavailable");
     }
     render();
+  }
+
+  function setSourceLabel(txt) {
+    const el = document.getElementById("sourceLabel");
+    if (el) el.textContent = txt;
   }
 
   const RISK = {
