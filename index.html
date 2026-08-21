@@ -215,7 +215,7 @@
     </div>
     <select class="control" id="dateSelect">
       <option value="all">All time</option>
-      <option value="7">Last 7 days</option>
+      <option value="7" selected>Last 7 days</option>
       <option value="30">Last 30 days</option>
       <option value="90">Last 90 days</option>
       <option value="custom">Custom range…</option>
@@ -226,6 +226,7 @@
       <input type="date" id="dateTo" />
     </div>
     <select class="control" id="limitSelect">
+      <option value="all" selected>All in range</option>
       <option value="today">Today's releases</option>
       <option value="5">Show last 5</option>
       <option value="10">Show last 10</option>
@@ -284,7 +285,8 @@
     icon: '<path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' };
   const DAY = 86400000;
 
-  const state = { search: "", riskFilter: null, mode: "timeline", limit: "today", dateMode: "all", dateFrom: null, dateTo: null, open: new Set() };
+  const DEFAULTS = { limit: "all", dateMode: "7" };
+  const state = { search: "", riskFilter: null, mode: "timeline", limit: DEFAULTS.limit, dateMode: DEFAULTS.dateMode, dateFrom: null, dateTo: null, open: new Set() };
 
   function fmtDate(iso) {
     return new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
@@ -355,7 +357,7 @@
             dayInfo = { fallback: true, label: null };
           }
         }
-      } else {
+      } else if (state.limit !== "all") {
         list = list.slice(0, state.limit);
       }
     }
@@ -464,7 +466,7 @@
     } else if (state.dateMode !== "all") {
       parts.push(state.dateMode === "custom" ? `between <strong>${state.dateFrom || "…"}</strong> and <strong>${state.dateTo || "…"}</strong>` : `from the <strong>last ${state.dateMode} days</strong>`);
     }
-    const suffix = parts.length ? " " + parts.join(", ") : (!searched && state.limit !== "today" ? ` (last ${state.limit} of ${beforeLimit})` : "");
+    const suffix = parts.length ? " " + parts.join(", ") : (!searched && state.limit !== "today" && state.limit !== "all" ? ` (last ${state.limit} of ${beforeLimit})` : "");
     return `Showing <strong>${count}</strong> release${count === 1 ? "" : "s"}${suffix}.`;
   }
 
@@ -481,7 +483,7 @@
     document.getElementById("dateSelect").disabled = dateLocked;
     document.getElementById("dateSelect").style.opacity = dateLocked ? 0.5 : 1;
 
-    const anyFilterActive = state.search.trim() || state.riskFilter || state.dateMode !== "all";
+    const anyFilterActive = state.search.trim() || state.riskFilter || state.dateMode !== DEFAULTS.dateMode || state.limit !== DEFAULTS.limit;
     document.getElementById("resetFilters").setAttribute("data-show", String(!!anyFilterActive));
 
     const feed = document.getElementById("feed");
@@ -532,7 +534,7 @@
   document.getElementById("dateTo").addEventListener("change", (e) => { state.dateTo = e.target.value; render(); });
   document.getElementById("limitSelect").addEventListener("change", (e) => {
     const v = e.target.value;
-    state.limit = v === "today" ? "today" : Number(v);
+    state.limit = (v === "today" || v === "all") ? v : Number(v);
     if (state.limit === "today") {
       state.dateMode = "all"; state.dateFrom = null; state.dateTo = null;
       document.getElementById("dateSelect").value = "all";
@@ -553,12 +555,12 @@
     render();
   });
   document.getElementById("resetFilters").addEventListener("click", () => {
-    state.search = ""; state.riskFilter = null; state.dateMode = "all"; state.dateFrom = null; state.dateTo = null; state.limit = "today";
+    state.search = ""; state.riskFilter = null; state.dateMode = DEFAULTS.dateMode; state.dateFrom = null; state.dateTo = null; state.limit = DEFAULTS.limit;
     document.getElementById("searchInput").value = "";
     document.getElementById("clearSearch").setAttribute("data-show", "false");
-    document.getElementById("dateSelect").value = "all";
+    document.getElementById("dateSelect").value = DEFAULTS.dateMode;
     document.getElementById("customRange").setAttribute("data-show", "false");
-    document.getElementById("limitSelect").value = "today";
+    document.getElementById("limitSelect").value = DEFAULTS.limit;
     render();
   });
 
