@@ -56,9 +56,7 @@ That writes `db/seed.sql` with all releases plus keyword-derived area tags.
 
 `loadReleases()` in `index.html` already supports both sources. It tries the DB
 first when configured and falls back to `releases.json` if the DB is unreachable.
-The badge in the top-right names the live source — "Supabase", "static file", or
-"static file (DB unreachable)" — so a silent fallback is visible rather than
-mysterious.
+The fallback logs a console warning, so a silent switch is still traceable.
 
 This matters because **free-tier Supabase projects pause when idle** (roughly a
 week). Without the fallback the dashboard would simply go blank; with it, the
