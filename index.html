@@ -1,1 +1,571 @@
-/Users/user/xneeti-release-dashboard/dashboard/index.html
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Release Management</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f2f4f5;
+    --surface: #ffffff;
+    --surface-2: #eceef0;
+    --ink: #12151a;
+    --ink-secondary: #5b6169;
+    --ink-muted: #8a919b;
+    --border: rgba(18, 21, 26, 0.10);
+    --border-strong: rgba(18, 21, 26, 0.16);
+    --accent: #0ea5b7;
+    --accent-wash: rgba(14, 165, 183, 0.10);
+    --good: #0ca30c;
+    --good-wash: rgba(12, 163, 12, 0.10);
+    --warning: #c98500;
+    --warning-wash: rgba(250, 178, 25, 0.14);
+    --serious: #d9633a;
+    --serious-wash: rgba(236, 131, 90, 0.14);
+    --critical: #d03b3b;
+    --critical-wash: rgba(208, 59, 59, 0.10);
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0f1113;
+      --surface: #191c1f;
+      --surface-2: #20242a;
+      --ink: #eef0f2;
+      --ink-secondary: #a7adb5;
+      --ink-muted: #6b7280;
+      --border: rgba(238, 240, 242, 0.10);
+      --border-strong: rgba(238, 240, 242, 0.18);
+      --accent: #2dd4e8;
+      --accent-wash: rgba(45, 212, 232, 0.14);
+      --good: #29c22e;
+      --good-wash: rgba(41, 194, 46, 0.14);
+      --warning: #fab219;
+      --warning-wash: rgba(250, 178, 25, 0.16);
+      --serious: #ec835a;
+      --serious-wash: rgba(236, 131, 90, 0.16);
+      --critical: #e66767;
+      --critical-wash: rgba(230, 103, 103, 0.14);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0f1113;
+    --surface: #191c1f;
+    --surface-2: #20242a;
+    --ink: #eef0f2;
+    --ink-secondary: #a7adb5;
+    --ink-muted: #6b7280;
+    --border: rgba(238, 240, 242, 0.10);
+    --border-strong: rgba(238, 240, 242, 0.18);
+    --accent: #2dd4e8;
+    --accent-wash: rgba(45, 212, 232, 0.14);
+    --good: #29c22e;
+    --good-wash: rgba(41, 194, 46, 0.14);
+    --warning: #fab219;
+    --warning-wash: rgba(250, 178, 25, 0.16);
+    --serious: #ec835a;
+    --serious-wash: rgba(236, 131, 90, 0.16);
+    --critical: #e66767;
+    --critical-wash: rgba(230, 103, 103, 0.14);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 36px 20px 80px; }
+
+  header.top { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); }
+  h1 { margin: 0; font-size: 27px; font-weight: 800; letter-spacing: -0.01em; text-wrap: balance; }
+  .dek { margin: 2px 0 0; color: var(--ink-secondary); font-size: 14px; max-width: 62ch; line-height: 1.5; }
+
+  /* ---- live strip ---- */
+  .live-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .live-chip { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; flex: 1 1 220px; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; animation: pulse 2.2s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 var(--accent-wash); } 50% { box-shadow: 0 0 0 6px transparent; } }
+  .live-chip .meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .live-chip .label { font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .live-chip .version { font-family: var(--mono); font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---- stat tiles ---- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .stat-tile .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); }
+  .stat-tile .value { font-family: var(--mono); font-size: 21px; font-weight: 700; line-height: 1.2; }
+  .stat-tile .value.critical { color: var(--critical); }
+  .stat-tile.wide { grid-column: span 2; }
+  .sparkline { display: flex; align-items: flex-end; gap: 2px; height: 26px; margin-top: 4px; }
+  .sparkline .bar { flex: 1; background: var(--accent); opacity: 0.45; border-radius: 2px 2px 0 0; min-height: 2px; }
+  .sparkline .bar[data-hasrelease="true"] { opacity: 0.9; }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat-tile.wide { grid-column: span 2; }
+  }
+
+  /* ---- toolbar ---- */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .search-box { position: relative; flex: 1 1 260px; }
+  .search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--ink-muted); pointer-events: none; }
+  .search-box input {
+    width: 100%; padding: 8px 30px 8px 32px; border-radius: 8px; border: 1px solid var(--border-strong);
+    background: var(--surface); color: var(--ink); font-size: 13px; font-family: var(--mono);
+  }
+  .search-box input::placeholder { font-family: var(--sans); color: var(--ink-muted); }
+  .search-box .clear-btn {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: none; background: none;
+    color: var(--ink-muted); cursor: pointer; font-size: 15px; padding: 4px; display: none; line-height: 1;
+  }
+  .search-box .clear-btn[data-show="true"] { display: block; }
+
+  select.control {
+    border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); border-radius: 8px;
+    padding: 8px 10px; font-size: 13px; font-family: inherit; cursor: pointer;
+  }
+  .custom-range { display: none; align-items: center; gap: 6px; }
+  .custom-range[data-show="true"] { display: flex; }
+  .custom-range input[type="date"] {
+    border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); border-radius: 8px;
+    padding: 7px 8px; font-size: 12.5px; font-family: var(--mono);
+  }
+  .custom-range span { color: var(--ink-muted); font-size: 12px; }
+
+  .toolbar-row2 { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--ink-secondary); border-radius: 999px; padding: 6px 12px 6px 10px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; user-select: none; transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  }
+  .pill svg { width: 13px; height: 13px; }
+  .pill .count { color: var(--ink-muted); font-weight: 500; }
+  .pill:hover { background: var(--surface-2); }
+  .pill[data-active="true"] { color: var(--pill-color, var(--ink)); background: var(--pill-wash, var(--surface-2)); border-color: var(--pill-color, var(--border-strong)); }
+  .pill[data-active="true"] .count { color: inherit; opacity: 0.75; }
+
+  .group-toggle { display: flex; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+  .group-toggle button { border: none; background: var(--surface); color: var(--ink-secondary); font-size: 12.5px; font-weight: 600; padding: 7px 12px; cursor: pointer; font-family: inherit; }
+  .group-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--page); }
+
+  .reset-link { border: none; background: none; color: var(--accent); font-size: 12.5px; font-weight: 600; cursor: pointer; padding: 4px 2px; display: none; font-family: inherit; }
+  .reset-link[data-show="true"] { display: inline-block; }
+
+  .status-line { font-size: 12.5px; color: var(--ink-muted); margin: 10px 0 14px; }
+  .status-line strong { color: var(--ink-secondary); font-weight: 600; }
+
+  /* ---- feed ---- */
+  .section-head { display: flex; align-items: center; gap: 8px; margin: 24px 0 10px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--section-color, var(--ink-secondary)); }
+  .section-head svg { width: 14px; height: 14px; }
+  .section-head .n { color: var(--ink-muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+  .feed { display: flex; flex-direction: column; gap: 10px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--card-color, var(--border-strong));
+    border-radius: 8px; padding: 15px 17px; transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06); }
+  .card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 9px; }
+  .chip-neutral { font-size: 11.5px; font-weight: 600; color: var(--ink-secondary); background: var(--surface-2); border-radius: 5px; padding: 3px 7px; }
+  .version-tag { font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  mark.hit { background: var(--accent-wash); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .risk-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; color: var(--card-color); background: var(--card-wash); border-radius: 5px; padding: 3px 8px 3px 6px; }
+  .risk-badge svg { width: 12px; height: 12px; }
+  .card-top time { margin-left: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ink-muted); white-space: nowrap; }
+  .overview { font-size: 14.5px; font-weight: 600; line-height: 1.5; color: var(--ink); margin: 0 0 8px; }
+  .highlights { margin: 0 0 10px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .highlights li { font-size: 13.5px; line-height: 1.55; color: var(--ink-secondary); padding-left: 16px; position: relative; }
+  .highlights li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 4px; height: 4px; border-radius: 50%; background: var(--card-color); }
+  .card-foot { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--ink-muted); flex-wrap: wrap; }
+  .card-foot .actor { font-family: var(--mono); }
+  .card-foot a { color: var(--ink-secondary); text-decoration: none; border-bottom: 1px solid var(--border-strong); }
+  .card-foot a:hover { color: var(--accent); border-color: var(--accent); }
+  .detail-toggle { background: none; border: none; color: var(--ink-secondary); font-family: inherit; font-size: 12px; cursor: pointer; padding: 0; margin-left: auto; text-decoration: underline; text-decoration-color: var(--border-strong); }
+  .detail-toggle:hover { color: var(--accent); }
+  .tech-details { list-style: none; margin: 10px 0 0; padding: 10px 0 0; border-top: 1px dashed var(--border); display: none; flex-direction: column; gap: 5px; }
+  .tech-details[data-open="true"] { display: flex; }
+  .tech-details li { font-size: 12.5px; color: var(--ink-secondary); display: flex; gap: 8px; }
+  .tech-details .k { color: var(--ink-muted); flex-shrink: 0; width: 66px; }
+  .tech-details .v { font-family: var(--mono); }
+  .tech-details .inferred { color: var(--ink-muted); font-family: var(--sans); font-size: 11px; }
+
+  .empty { text-align: center; color: var(--ink-muted); font-size: 13.5px; padding: 44px 0; }
+
+  footer.note { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-muted); line-height: 1.6; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Xneeti · Prod deploys</div>
+    <h1>Release Management</h1>
+    <p class="dek">Every production deploy, translated into plain language — so any team can see what shipped without reading a diff.</p>
+  </header>
+
+  <div class="live-strip" id="liveStrip"></div>
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input id="searchInput" type="text" placeholder="Search by version, e.g. 1.5 or v1.1.33-backend…" autocomplete="off" />
+      <button class="clear-btn" id="clearSearch" aria-label="Clear search">×</button>
+    </div>
+    <select class="control" id="dateSelect">
+      <option value="all">All time</option>
+      <option value="7">Last 7 days</option>
+      <option value="30">Last 30 days</option>
+      <option value="90">Last 90 days</option>
+      <option value="custom">Custom range…</option>
+    </select>
+    <div class="custom-range" id="customRange">
+      <input type="date" id="dateFrom" />
+      <span>to</span>
+      <input type="date" id="dateTo" />
+    </div>
+    <select class="control" id="limitSelect">
+      <option value="today">Today's releases</option>
+      <option value="5">Show last 5</option>
+      <option value="10">Show last 10</option>
+      <option value="20">Show last 20</option>
+    </select>
+  </div>
+
+  <div class="toolbar-row2">
+    <div class="pills" id="pills"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="reset-link" id="resetFilters">Reset filters</button>
+      <div class="group-toggle">
+        <button id="modeTimeline" aria-pressed="true">Timeline</button>
+        <button id="modeRisk" aria-pressed="false">By risk</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="status-line" id="statusLine"></p>
+
+  <div id="feed"></div>
+
+  <footer class="note">
+    Fed by the prod deploy pipelines (<span style="font-family:var(--mono)">deploy-prod.yml</span> · <span style="font-family:var(--mono)">prod-ecs-deploy.yml</span> · <span style="font-family:var(--mono)">prod-deploy.yml</span> for the EC2/scheduler pair). Sourced from the same release log this team already keeps by hand — this view just makes it live and searchable for every team, not only engineering.
+  </footer>
+</div>
+
+<script>
+  let RELEASES = [];
+
+  async function loadReleases() {
+    try {
+      const res = await fetch("./releases.json", { cache: "no-store" });
+      const data = await res.json();
+      RELEASES = data.releases || [];
+    } catch (e) {
+      console.error("Failed to load releases.json", e);
+    }
+    render();
+  }
+
+  const RISK = {
+    breaking: { label: "Breaking change", color: "var(--critical)", wash: "var(--critical-wash)",
+      icon: '<path d="M8 1.5l7 12.5H1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="12" r="0.8" fill="currentColor"/>' },
+    hotfix: { label: "Hotfix", color: "var(--serious)", wash: "var(--serious-wash)",
+      icon: '<path d="M9 1L3.5 9h3.2L6 15l6.5-9H9.3z" fill="currentColor"/>' },
+    bugfix: { label: "Bug fix", color: "var(--warning)", wash: "var(--warning-wash)",
+      icon: '<circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.3l2 2 4-4.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>' },
+    feature: { label: "Feature", color: "var(--good)", wash: "var(--good-wash)",
+      icon: '<circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.5v7M4.5 8h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' },
+    chore: { label: "Chore", color: "var(--ink-muted)", wash: "var(--surface-2)",
+      icon: '<circle cx="4" cy="8" r="1.2" fill="currentColor"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="12" cy="8" r="1.2" fill="currentColor"/>' },
+  };
+  const RISK_ORDER = ["breaking", "hotfix", "bugfix", "feature", "chore"];
+  const FAILED = { label: "Deploy failed", color: "var(--critical)", wash: "var(--critical-wash)",
+    icon: '<path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' };
+  const DAY = 86400000;
+
+  const state = { search: "", riskFilter: null, mode: "timeline", limit: "today", dateMode: "all", dateFrom: null, dateTo: null, open: new Set() };
+
+  function fmtDate(iso) {
+    return new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  }
+  function fmtDay(d) { return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }); }
+  function riskIcon(tag) { return `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">${(tag === "failed" ? FAILED : RISK[tag]).icon}</svg>`; }
+  function escapeHtml(s) { return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); }
+  function highlight(text, needle) {
+    if (!needle) return escapeHtml(text);
+    const i = text.toLowerCase().indexOf(needle.toLowerCase());
+    if (i === -1) return escapeHtml(text);
+    return escapeHtml(text.slice(0, i)) + "<mark class='hit'>" + escapeHtml(text.slice(i, i + needle.length)) + "</mark>" + escapeHtml(text.slice(i + needle.length));
+  }
+
+  function applyFilters() {
+    let list = RELEASES.slice();
+
+    if (state.limit !== "today" && state.dateMode !== "all") {
+      let from, to;
+      if (state.dateMode === "custom") {
+        from = state.dateFrom ? new Date(state.dateFrom) : null;
+        to = state.dateTo ? new Date(new Date(state.dateTo).getTime() + DAY) : null;
+      } else {
+        const maxDate = new Date(Math.max(...RELEASES.map((r) => new Date(r.deployed_at))));
+        from = new Date(maxDate.getTime() - Number(state.dateMode) * DAY);
+        to = null;
+      }
+      list = list.filter((r) => {
+        const d = new Date(r.deployed_at);
+        return (!from || d >= from) && (!to || d < to);
+      });
+    }
+
+    if (state.riskFilter === "failed") list = list.filter((r) => r.status === "failed");
+    else if (state.riskFilter) list = list.filter((r) => r.risk_tag === state.riskFilter);
+
+    let searched = false;
+    if (state.search.trim()) {
+      searched = true;
+      const q = state.search.trim().toLowerCase();
+      list = list.filter((r) =>
+        r.version.toLowerCase().includes(q) ||
+        r.overview.toLowerCase().includes(q) ||
+        r.deployed_by.toLowerCase().includes(q) ||
+        r.commit.toLowerCase().includes(q)
+      );
+    }
+
+    list.sort((a, b) => new Date(b.deployed_at) - new Date(a.deployed_at));
+    const beforeLimit = list.length;
+
+    let dayInfo = null;
+    if (!searched) {
+      if (state.limit === "today") {
+        const now = new Date();
+        const todays = list.filter((r) => new Date(r.deployed_at).toDateString() === now.toDateString());
+        if (todays.length) {
+          list = todays;
+          dayInfo = { fallback: false, label: null };
+        } else {
+          const past = list.filter((r) => new Date(r.deployed_at) < now);
+          if (past.length) {
+            const recentDateStr = new Date(Math.max(...past.map((r) => new Date(r.deployed_at)))).toDateString();
+            list = past.filter((r) => new Date(r.deployed_at).toDateString() === recentDateStr);
+            dayInfo = { fallback: true, label: recentDateStr };
+          } else {
+            list = [];
+            dayInfo = { fallback: true, label: null };
+          }
+        }
+      } else {
+        list = list.slice(0, state.limit);
+      }
+    }
+
+    return { list, beforeLimit, searched, dayInfo };
+  }
+
+  function renderLiveStrip() {
+    const byComponent = {};
+    for (const r of RELEASES) {
+      if (r.status === "failed") continue;
+      if (!byComponent[r.component] || new Date(r.deployed_at) > new Date(byComponent[r.component].deployed_at)) byComponent[r.component] = r;
+    }
+    document.getElementById("liveStrip").innerHTML = ["frontend", "backend"].filter((c) => byComponent[c]).map((c) => {
+      const r = byComponent[c];
+      return `<div class="live-chip"><span class="live-dot"></span><div class="meta"><span class="label">${r.component_label} · live now</span><span class="version">${r.version}</span></div></div>`;
+    }).join("");
+  }
+
+  function renderStats(list) {
+    const breaking = list.filter((r) => r.risk_tag === "breaking").length;
+    const fe = list.filter((r) => r.component === "frontend").length;
+    const be = list.filter((r) => r.component === "backend").length;
+
+    const maxDate = list.length ? new Date(Math.max(...list.map((r) => new Date(r.deployed_at)))) : new Date(Math.max(...RELEASES.map((r) => new Date(r.deployed_at))));
+    const days = [];
+    for (let i = 13; i >= 0; i--) days.push(new Date(maxDate.getTime() - i * DAY));
+    const counts = days.map((d) => RELEASES.filter((r) => {
+      const rd = new Date(r.deployed_at);
+      return rd.toDateString() === d.toDateString();
+    }).length);
+    const maxCount = Math.max(1, ...counts);
+    const sparkline = days.map((d, i) => `<div class="bar" data-hasrelease="${counts[i] > 0}" style="height:${Math.max(10, (counts[i] / maxCount) * 100)}%" title="${fmtDay(d)}: ${counts[i]} release${counts[i] === 1 ? "" : "s"}"></div>`).join("");
+
+    document.getElementById("stats").innerHTML = `
+      <div class="stat-tile"><span class="label">Releases shown</span><span class="value">${list.length}</span></div>
+      <div class="stat-tile"><span class="label">Breaking changes</span><span class="value ${breaking ? "critical" : ""}">${breaking}</span></div>
+      <div class="stat-tile"><span class="label">Frontend / Backend</span><span class="value" style="font-size:16px">${fe} FE · ${be} BE</span></div>
+      <div class="stat-tile wide"><span class="label">Deploy activity — 14 days</span><div class="sparkline">${sparkline}</div></div>
+    `;
+  }
+
+  function renderPills() {
+    const counts = {};
+    let failedCount = 0;
+    for (const r of RELEASES) {
+      if (r.status === "failed") failedCount++;
+      else counts[r.risk_tag] = (counts[r.risk_tag] || 0) + 1;
+    }
+    const all = `<button class="pill" data-tag="" data-active="${state.riskFilter === null}">All <span class="count">${RELEASES.length}</span></button>`;
+    const rest = RISK_ORDER.filter((tag) => counts[tag]).map((tag) => {
+      const r = RISK[tag];
+      const active = state.riskFilter === tag;
+      const style = active ? ` style="--pill-color:${r.color};--pill-wash:${r.wash}"` : "";
+      return `<button class="pill" data-tag="${tag}" data-active="${active}"${style}>${riskIcon(tag)} ${r.label} <span class="count">${counts[tag]}</span></button>`;
+    });
+    const failedPill = failedCount ? (() => {
+      const active = state.riskFilter === "failed";
+      const style = active ? ` style="--pill-color:${FAILED.color};--pill-wash:${FAILED.wash}"` : "";
+      return `<button class="pill" data-tag="failed" data-active="${active}"${style}>${riskIcon("failed")} ${FAILED.label} <span class="count">${failedCount}</span></button>`;
+    })() : "";
+    document.getElementById("pills").innerHTML = all + rest.join("") + failedPill;
+    document.querySelectorAll(".pill").forEach((btn) => btn.addEventListener("click", () => { state.riskFilter = btn.dataset.tag || null; render(); }));
+  }
+
+  function cardHtml(r) {
+    const risk = r.status === "failed" ? FAILED : RISK[r.risk_tag];
+    const open = state.open.has(r.id);
+    const q = state.search.trim();
+    const runLine = r.run_url
+      ? `<li><span class="k">Run</span><a href="${r.run_url}" target="_blank" rel="noopener">${r.run_url.split("/").pop()}</a></li>`
+      : `<li><span class="k">Run</span><span class="v">not recorded</span></li>`;
+    return `<div class="card" style="--card-color:${risk.color};--card-wash:${risk.wash}">
+      <div class="card-top">
+        <span class="chip-neutral">${r.component_label}</span>
+        <span class="version-tag">${highlight(r.version, q)}</span>
+        <span class="risk-badge">${riskIcon(r.status === "failed" ? "failed" : r.risk_tag)}${risk.label}</span>
+        <time>${fmtDate(r.deployed_at)}</time>
+      </div>
+      <p class="overview">${highlight(r.overview, q)}</p>
+      <ul class="highlights">${r.highlights.map((h) => `<li>${highlight(h, q)}</li>`).join("")}</ul>
+      <div class="card-foot">
+        <span class="actor">@${r.deployed_by}</span>
+        <button class="detail-toggle" data-id="${r.id}">${open ? "Hide" : "Show"} technical details</button>
+      </div>
+      <ul class="tech-details" data-open="${open}">
+        <li><span class="k">Commit</span><span class="v">${highlight(r.commit, q)}</span></li>
+        <li><span class="k">Ref</span><span class="v">${r.ref}</span>${r.ref_inferred ? `<span class="inferred">(inferred from deploy time, not stated in the notification)</span>` : ""}</li>
+        ${runLine}
+      </ul>
+    </div>`;
+  }
+
+  function describeView(count, beforeLimit, searched, dayInfo) {
+    const parts = [];
+    if (searched) parts.push(`matching <strong>"${escapeHtml(state.search.trim())}"</strong>`);
+    if (state.riskFilter) parts.push(`tagged <strong>${(state.riskFilter === "failed" ? FAILED : RISK[state.riskFilter]).label}</strong>`);
+    if (!searched && state.limit === "today" && dayInfo) {
+      if (!dayInfo.fallback) {
+        parts.push(`from <strong>today</strong>`);
+      } else if (dayInfo.label) {
+        parts.push(`— nothing today, showing the most recent day with releases (<strong>${fmtDay(new Date(dayInfo.label))}</strong>)`);
+      } else {
+        parts.push(`— no releases found yet`);
+      }
+    } else if (state.dateMode !== "all") {
+      parts.push(state.dateMode === "custom" ? `between <strong>${state.dateFrom || "…"}</strong> and <strong>${state.dateTo || "…"}</strong>` : `from the <strong>last ${state.dateMode} days</strong>`);
+    }
+    const suffix = parts.length ? " " + parts.join(", ") : (!searched && state.limit !== "today" ? ` (last ${state.limit} of ${beforeLimit})` : "");
+    return `Showing <strong>${count}</strong> release${count === 1 ? "" : "s"}${suffix}.`;
+  }
+
+  function render() {
+    renderLiveStrip();
+    const { list, beforeLimit, searched, dayInfo } = applyFilters();
+    renderStats(list);
+    renderPills();
+
+    document.getElementById("statusLine").innerHTML = describeView(list.length, beforeLimit, searched, dayInfo);
+    document.getElementById("limitSelect").disabled = searched;
+    document.getElementById("limitSelect").style.opacity = searched ? 0.5 : 1;
+    const dateLocked = searched || state.limit === "today";
+    document.getElementById("dateSelect").disabled = dateLocked;
+    document.getElementById("dateSelect").style.opacity = dateLocked ? 0.5 : 1;
+
+    const anyFilterActive = state.search.trim() || state.riskFilter || state.dateMode !== "all";
+    document.getElementById("resetFilters").setAttribute("data-show", String(!!anyFilterActive));
+
+    const feed = document.getElementById("feed");
+    if (!list.length) {
+      feed.innerHTML = `<p class="empty">No releases match these filters.</p>`;
+      return;
+    }
+    if (state.mode === "timeline") {
+      feed.innerHTML = `<div class="feed">${list.map(cardHtml).join("")}</div>`;
+    } else {
+      let html = "";
+      const failedGroup = list.filter((r) => r.status === "failed");
+      if (failedGroup.length) {
+        html += `<div class="section-head" style="--section-color:${FAILED.color}">${riskIcon("failed")} ${FAILED.label} <span class="n">— ${failedGroup.length}</span></div><div class="feed">${failedGroup.map(cardHtml).join("")}</div>`;
+      }
+      for (const tag of RISK_ORDER) {
+        const group = list.filter((r) => r.risk_tag === tag && r.status !== "failed");
+        if (!group.length) continue;
+        const risk = RISK[tag];
+        html += `<div class="section-head" style="--section-color:${risk.color}">${riskIcon(tag)} ${risk.label} <span class="n">— ${group.length}</span></div><div class="feed">${group.map(cardHtml).join("")}</div>`;
+      }
+      feed.innerHTML = html;
+    }
+    feed.querySelectorAll(".detail-toggle").forEach((btn) => btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
+      state.open.has(id) ? state.open.delete(id) : state.open.add(id);
+      render();
+    }));
+  }
+
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    state.search = e.target.value;
+    document.getElementById("clearSearch").setAttribute("data-show", String(!!state.search));
+    render();
+  });
+  document.getElementById("clearSearch").addEventListener("click", () => {
+    state.search = "";
+    document.getElementById("searchInput").value = "";
+    document.getElementById("clearSearch").setAttribute("data-show", "false");
+    render();
+  });
+  document.getElementById("dateSelect").addEventListener("change", (e) => {
+    state.dateMode = e.target.value;
+    document.getElementById("customRange").setAttribute("data-show", String(state.dateMode === "custom"));
+    render();
+  });
+  document.getElementById("dateFrom").addEventListener("change", (e) => { state.dateFrom = e.target.value; render(); });
+  document.getElementById("dateTo").addEventListener("change", (e) => { state.dateTo = e.target.value; render(); });
+  document.getElementById("limitSelect").addEventListener("change", (e) => {
+    const v = e.target.value;
+    state.limit = v === "today" ? "today" : Number(v);
+    if (state.limit === "today") {
+      state.dateMode = "all"; state.dateFrom = null; state.dateTo = null;
+      document.getElementById("dateSelect").value = "all";
+      document.getElementById("customRange").setAttribute("data-show", "false");
+    }
+    render();
+  });
+  document.getElementById("modeTimeline").addEventListener("click", () => {
+    state.mode = "timeline";
+    document.getElementById("modeTimeline").setAttribute("aria-pressed", "true");
+    document.getElementById("modeRisk").setAttribute("aria-pressed", "false");
+    render();
+  });
+  document.getElementById("modeRisk").addEventListener("click", () => {
+    state.mode = "risk";
+    document.getElementById("modeRisk").setAttribute("aria-pressed", "true");
+    document.getElementById("modeTimeline").setAttribute("aria-pressed", "false");
+    render();
+  });
+  document.getElementById("resetFilters").addEventListener("click", () => {
+    state.search = ""; state.riskFilter = null; state.dateMode = "all"; state.dateFrom = null; state.dateTo = null; state.limit = "today";
+    document.getElementById("searchInput").value = "";
+    document.getElementById("clearSearch").setAttribute("data-show", "false");
+    document.getElementById("dateSelect").value = "all";
+    document.getElementById("customRange").setAttribute("data-show", "false");
+    document.getElementById("limitSelect").value = "today";
+    render();
+  });
+
+  loadReleases();
+  setInterval(loadReleases, 45000);
+</script>
