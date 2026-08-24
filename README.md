@@ -58,7 +58,7 @@ explains what shipped, why it matters, and how risky it was.
 | --- | --- |
 | `index.html` | The dashboard. One self-contained file — no build step, no dependencies. |
 | `releases.json` | The release log. Source of truth, committed to git. |
-| `automation/` | The scheduled routine's instructions, and how to set it up. |
+| `automation/` | The release-logging pipeline: the cloud routine, the working local task, and their limits. |
 | `db/` | A planned Postgres migration. **Not active** — see `db/README.md`. |
 | `mockup/` | A clickable mockup showing how this would look merged into the Xneeti dashboard. |
 

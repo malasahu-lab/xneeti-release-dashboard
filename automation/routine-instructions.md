@@ -1,5 +1,31 @@
 # `prod-deployments-watchdog` — routine instructions
 
+> ## Status: this cloud routine does not currently work
+>
+> It fires on schedule and reads Slack correctly, but **every GitHub API call is
+> refused by the sandbox's egress proxy**:
+>
+> ```
+> GitHub access to this repository is not enabled for this session.
+> Use add_repo to request access.
+> ```
+>
+> HTTP 403 on all three repos, **independent of the tokens** — the proxy blocks
+> the host before any Authorization header is evaluated. The routine correctly
+> refuses to write a guessed entry, so the log goes stale rather than wrong, and
+> it sends a push notification each time it is blocked.
+>
+> **Fix:** attach the three repos to the routine's environment through Claude
+> Code's GitHub integration (that is what the `add_repo` pointer means). This is
+> a UI action on claude.ai and cannot be done through the trigger API. The two
+> `XNeetiTech` repos will likely need org-admin approval. Once attached, the two
+> PATs below become unnecessary and should be deleted rather than replaced.
+>
+> **Working alternative meanwhile:** `local-task.md` in this directory — the same
+> pipeline as a local scheduled task using an authenticated `gh` CLI. No tokens,
+> no proxy, no org approval. Its limitation is that it only runs while the app is
+> open on the machine.
+
 The exact prompt the scheduled routine runs, with credentials redacted. Paste
 this into the routine's Instructions field on claude.ai and substitute your own
 token values for the two `REPLACE_WITH_…` placeholders.
@@ -80,8 +106,22 @@ Worth fixing if this goes past the hackathon:
 
 - **The EC2/scheduler pipeline is not handled.** Coverage was scoped to frontend
   and backend-ECS. EC2 deploys post `Prod deploy succeeded` from the monolith repo
-  *without* the `-backend` suffix, so they currently fall through Step 1's
-  patterns. Seven such deploys exist in the backfilled history.
+  *without* the `-backend` suffix — wording identical to a frontend deploy — so
+  Step 1's frontend pattern matches them. Eight such deploys exist in the history.
+
+  Observed behaviour on 2026-08-24 (`v1.1.48`): the routine did **not** blindly
+  file it as frontend. It noticed the run link pointed at `xneeti-monolith` with
+  no `-backend` suffix, called the message inconsistent, and declined to classify
+  it. Good judgement, but it should not depend on judgement — the fix is to
+  branch on the repository in the run URL rather than the message wording:
+
+  | Run link contains | Message text | Pipeline | id |
+  | --- | --- | --- | --- |
+  | `xneeti-frontend` | `Prod deploy …` | Frontend | `fe-<version>` |
+  | `xneeti-monolith` | `Prod ECS backend deploy …` | Backend (ECS) | `be-<version>` |
+  | `xneeti-monolith` | `Prod deploy …` | Backend (EC2 + Scheduler) | `be-<version>-ec2` |
+
+  `local-task.md` implements this table.
 - **`component_label` is set directly** rather than derived from a pipeline field,
   which is why EC2 entries need a manual `-ec2` id suffix.
 - **No ticket extraction.** Commit messages carry `XNEETI-####` references that
