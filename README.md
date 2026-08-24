@@ -60,6 +60,7 @@ explains what shipped, why it matters, and how risky it was.
 | `releases.json` | The release log. Source of truth, committed to git. |
 | `automation/` | The scheduled routine's instructions, and how to set it up. |
 | `db/` | A planned Postgres migration. **Not active** — see `db/README.md`. |
+| `mockup/` | A clickable mockup showing how this would look merged into the Xneeti dashboard. |
 
 ## The dashboard
 
@@ -76,6 +77,19 @@ Reads `releases.json` and renders a filterable feed. Deliberate choices:
   rather than absent.
 - Search by version, commit, or author; filter by date; group by risk.
 - Defaults to the last 7 days, refreshes every 45 seconds.
+
+## Merged into the Xneeti dashboard
+
+`mockup/` is a clickable stand-in for the product dashboard, showing the flow this
+would take if it stopped being a separate site: a release icon beside the
+notification bell → a dialog with what is live on production right now → a full
+Release Management table → a per-release detail page.
+
+**Live:** <https://malasahu-lab.github.io/xneeti-release-dashboard/mockup/>
+
+The chrome around it is a mockup. The release data in it is real — it fetches the
+same `releases.json` this repo serves, so it stays current on its own. See
+`mockup/README.md`.
 
 ## What is real, and what is not
 

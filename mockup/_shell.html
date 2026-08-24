@@ -1,0 +1,82 @@
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">X</div>
+    <div class="brand-txt">
+      <div class="n1">Xneeti</div>
+      <div class="n2">Xneeti OneOS</div>
+    </div>
+    <span class="brand-caret">‹</span>
+  </div>
+
+  <div class="seg">
+    <button class="on">Client</button>
+    <button>Admin</button>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-item"><span class="ic">🧬</span> Helix <span class="sparkle">✦</span></button>
+    <button class="nav-item"><span class="ic">📄</span> Reports <span class="chev">⌄</span></button>
+    <button class="nav-item"><span class="ic">📣</span> Advertising <span class="chev">⌄</span></button>
+    <button class="nav-item"><span class="ic">⚗️</span> Creative Lab <span class="sparkle">✦</span> <span class="chev">⌃</span></button>
+    <div class="nav-sub">
+      <button class="nav-item"><span class="ic">🖼</span> Image Studio <span class="sparkle">✦</span></button>
+      <button class="nav-item"><span class="ic">🅰</span> Content Studio <span class="sparkle">✦</span></button>
+    </div>
+    <button class="nav-item"><span class="ic">🔒</span> Config Center <span class="chev">⌄</span></button>
+    <button class="nav-item"><span class="ic">✳️</span> Project Manager <span class="chev">⌄</span></button>
+    <button class="nav-item"><span class="ic">💲</span> Amazon Payouts</button>
+    <button class="nav-item on"><span class="ic">🔔</span> Notifications</button>
+  </nav>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+  <header class="topbar">
+    <div class="greet">
+      <div class="g1">Hi mala.sahu! <span class="tag-admin">GLOBAL ADMIN</span></div>
+      <div class="g2">Hope you're having a good day.</div>
+    </div>
+
+    <div class="topbar-right">
+      <!-- ★ THE NEW BUTTON — sits right beside the notification bell -->
+      <div class="pop-wrap">
+        <button class="icon-btn" id="relBtn" title="Release Management" aria-label="Release Management">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+            <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+          </svg>
+          <span class="dot-new" id="relDot"></span>
+        </button>
+
+        <!-- dialog -->
+        <div class="popover" id="relPop" hidden>
+          <div class="pop-head">Live on production</div>
+          <div id="popRows"></div>
+          <div class="pop-foot">
+            <button class="btn-primary" id="viewAll">View all releases →</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="icon-btn" title="Notifications">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
+      </button>
+
+      <div class="pill"><span class="amz">a</span> America/Los_Angeles</div>
+
+      <button class="pill" style="gap:7px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <main class="content" id="view"></main>
+</div>
