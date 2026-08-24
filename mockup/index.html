@@ -170,6 +170,9 @@ document.getElementById('viewAll').onclick = () => {
     relBtn.classList.remove('active');
 };
 
+// Called by the "Check for new releases" button after a successful re-fetch.
+window.onReleasesReloaded = (items) => { ALL = items; if (!relPop.hidden) renderPopover(); };
+
 (async () => {
     const result = await loadReleases();
     ALL = result.items;

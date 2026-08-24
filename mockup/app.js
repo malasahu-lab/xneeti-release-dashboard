@@ -72,7 +72,7 @@ function renderSource({ source, items }) {
         el.innerHTML =
             `<span class="led"></span> Live data · ${items.length} releases` +
             (newest ? ` · latest ${ago(newest)}` : '') +
-            ` <button id="srcRefresh">Refresh</button>`;
+            ` <button id="srcRefresh">Check for new releases</button>`;
     } else {
         el.className = 'src stale';
         el.innerHTML =
@@ -81,5 +81,30 @@ function renderSource({ source, items }) {
     }
 
     const btn = document.getElementById('srcRefresh');
-    if (btn) btn.onclick = () => window.location.reload();
+    if (btn) btn.onclick = () => checkForNewReleases(items.length);
+}
+
+
+/**
+ * "Check for new releases" — re-fetches the log without reloading the page.
+ * This only re-reads what has already been logged; it cannot make the pipeline
+ * run. Nothing behind a static page can.
+ */
+async function checkForNewReleases(previousCount) {
+    const el = document.getElementById('srcPill');
+    if (el) el.innerHTML = '<span class="led"></span> Checking…';
+
+    const result = await loadReleases();
+    if (typeof window.onReleasesReloaded === 'function') window.onReleasesReloaded(result.items);
+    renderSource(result);
+
+    const gained = result.items.length - previousCount;
+    if (gained > 0) {
+        const el2 = document.getElementById('srcPill');
+        if (el2) {
+            el2.classList.add('fresh');
+            el2.insertAdjacentHTML('beforeend',
+                ` <strong style="color:var(--good)">+${gained} new</strong>`);
+        }
+    }
 }

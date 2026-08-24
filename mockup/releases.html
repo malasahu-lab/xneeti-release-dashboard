@@ -365,6 +365,9 @@ window.addEventListener('hashchange', route);
 
 document.getElementById('view').innerHTML = '<div class="loading">Loading releases…</div>';
 
+// Called by the "Check for new releases" button after a successful re-fetch.
+window.onReleasesReloaded = (items) => { ALL = items; route(); };
+
 (async () => {
     const result = await loadReleases();
     ALL = result.items;
