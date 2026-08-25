@@ -115,7 +115,64 @@ def gh(path: str, token: str) -> Any:
         if e.code == 404:
             return None
         body = e.read().decode("utf-8", "replace")[:300]
-        raise RuntimeError(f"GitHub {e.code} on {path}: {body}") from None
+        err = RuntimeError(f"GitHub {e.code} on {path}: {body}")
+        err.status = e.code  # type: ignore[attr-defined]
+        raise err from None
+
+
+PERMISSION_HELP = """
+The token cannot read GitHub Actions on {repo}.
+
+Almost always one of two things:
+
+  1. The token is missing the "Actions" permission.
+     Fine-grained tokens need Actions: Read-only as a SEPARATE permission —
+     Contents: Read is not enough to list workflow runs.
+
+  2. The token is still waiting for XNeetiTech admin approval.
+     Fine-grained tokens against an organisation stay inert until an org owner
+     approves them, and calls fail exactly like this in the meantime.
+
+Check both at: https://github.com/settings/personal-access-tokens
+Open the token, confirm Actions: Read-only is listed under XNeetiTech, and look
+for a "Pending approval" banner at the top.
+
+After changing permissions you do NOT need a new token or a new secret — the
+change applies to the existing one. Just re-run this workflow.
+"""
+
+
+def preflight(token: str) -> int:
+    """Check each repo and permission before doing real work, so a misconfigured
+    token produces one clear sentence instead of a traceback partway through."""
+    repos = sorted({p["repo"] for p in PIPELINES})
+    failures = 0
+
+    for repo in repos:
+        try:
+            meta = gh(f"/repos/{repo}", token)
+        except RuntimeError as e:
+            print(f"  {repo}: cannot read the repository at all — {e}", file=sys.stderr)
+            failures += 1
+            continue
+        if meta is None:
+            print(f"  {repo}: not visible to this token (404). Either the repo is not "
+                  f"selected on the token, or the token is not approved yet.", file=sys.stderr)
+            failures += 1
+            continue
+        print(f"  {repo}: contents ok")
+
+        try:
+            gh(f"/repos/{repo}/actions/workflows?per_page=1", token)
+            print(f"  {repo}: actions ok")
+        except RuntimeError as e:
+            if getattr(e, "status", None) == 403:
+                print(PERMISSION_HELP.format(repo=repo), file=sys.stderr)
+            else:
+                print(f"  {repo}: actions check failed — {e}", file=sys.stderr)
+            failures += 1
+
+    return failures
 
 
 def recent_runs(pipeline: dict, token: str) -> list[dict]:
@@ -302,6 +359,13 @@ def main() -> int:
     if not token:
         print("XNEETI_TOKEN is not set — cannot read the Xneeti repos.", file=sys.stderr)
         return 1
+
+    print("Checking token access…")
+    if preflight(token):
+        print("\nStopping before making any changes — fix the token access above, "
+              "then re-run.", file=sys.stderr)
+        return 1
+    print()
 
     doc = json.loads(RELEASES_PATH.read_text())
     releases: list[dict] = doc["releases"]
