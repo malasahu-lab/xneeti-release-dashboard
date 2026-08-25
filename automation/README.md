@@ -79,3 +79,25 @@ are therefore both safe.
 nothing to diff. It is recorded with `status: "failed"` and no risk tag, which is
 how the dashboard knows to show "production is still running the previous
 version" rather than a changelog.
+
+---
+
+## Superseded
+
+This Slack-polling routine has been replaced by a GitHub Action —
+`.github/workflows/log-releases.yml`, documented in `scripts/README.md`.
+
+Two reasons it was retired:
+
+1. **It could not reach GitHub.** The scheduled cloud environment routes
+   outbound traffic through a proxy that rejects `api.github.com` for repos not
+   attached to the environment. Every run failed at the same step, regardless of
+   the tokens, with *"GitHub access to this repository is not enabled for this
+   session."*
+2. **Slack was the wrong source.** A frontend deploy and an EC2/scheduler deploy
+   post identical text; only the repository in the run link distinguishes them.
+   Reading the workflow runs directly removes the ambiguity, and needs no Slack
+   credentials and no long-lived PATs in a prompt.
+
+Kept for reference only. Do not re-enable it alongside the Action — both write
+`releases.json` and would conflict.
