@@ -1,6 +1,107 @@
 {
   "releases": [
     {
+      "id": "fe-v1.15.22",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.15.22",
+      "deployed_at": "2026-08-25T08:44:31Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "2fe27cc94e2e",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/32827548921",
+      "risk_tag": "bugfix",
+      "status": "success",
+      "overview": "Fixes the order comments appear in on Image Studio feedback threads.",
+      "highlights": [
+        "Feedback comments and their numbered markers now line up correctly in a thread.",
+        "Affects the Image Studio feedback panel only (PR #1478)."
+      ]
+    },
+    {
+      "id": "fe-v1.15.21",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.15.21",
+      "deployed_at": "2026-08-25T08:28:26Z",
+      "deployed_by": "yadav-anant",
+      "commit": "5ad41f1409b6",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/32826168560",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Adds date-range and section filters to Jobs Posted.",
+      "highlights": [
+        "New due-date and creation-date range filters on Jobs Posted.",
+        "Section filtering now allows several selections at once, each removable.",
+        "Clearer filter labels and date-range display.",
+        "Jobs Posted now defaults to newest-first and keeps the order the service returns (PR #1479)."
+      ]
+    },
+    {
+      "id": "be-v1.1.49-ec2",
+      "component": "backend",
+      "component_label": "Backend (EC2 + Scheduler)",
+      "version": "v1.1.49",
+      "deployed_at": "2026-08-25T07:33:30Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "8b67b7ccf94f",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32821973072",
+      "risk_tag": "breaking",
+      "status": "success",
+      "overview": "Pushes the same build to the scheduler, removing the code that fed the four dropped tables.",
+      "highlights": [
+        "Same commit as the two ECS deploys earlier today — same code, different target.",
+        "Carries the scheduler half of the four table retirements: the consumers that wrote to those tables are gone.",
+        "Went out 43 minutes AFTER the backend deploy that dropped the tables. The PRs specify the reverse order, so the old scheduler was briefly writing to tables that no longer existed."
+      ]
+    },
+    {
+      "id": "be-v1.1.49-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.49-backend",
+      "deployed_at": "2026-08-25T07:15:10Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "8b67b7ccf94f",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32819875935",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Redeploy of the same code as v1.1.48-backend — no new changes.",
+      "highlights": [
+        "Identical commit to v1.1.48-backend 25 minutes earlier. Nothing new shipped.",
+        "A same-commit redeploy usually means the first attempt needed repeating; worth a glance at the run if you were not expecting it."
+      ]
+    },
+    {
+      "id": "be-v1.1.48-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.48-backend",
+      "deployed_at": "2026-08-25T06:50:08Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "8b67b7ccf94f",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32818384999",
+      "risk_tag": "breaking",
+      "status": "success",
+      "overview": "Permanently deletes four more Sponsored Display and Sponsored Products reporting tables.",
+      "highlights": [
+        "Ran migrations that DROP four tables: sd_purchased_product_metrics, sd_campaign_matched_target_metrics, sd_adgroup_metrics and sp_gross_invalid_traffic_metrics. All irreversible — rollback is restore-from-backup only.",
+        "The matching report types are gone, so requesting any of those four reports will no longer work.",
+        "Also registers a mailer queue and carries search-term report migration work.",
+        "Each of the four drop PRs (#1687, #1686, #1684, #1689) states a deploy order of scheduler first, backend last. The backend went first again here.",
+        "Brings the tier-1 table retirement to five of fifteen tables dropped, following v1.1.47-backend yesterday."
+      ]
+    },
+    {
       "id": "fe-v1.15.20",
       "component": "frontend",
       "component_label": "Frontend",
