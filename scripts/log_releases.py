@@ -383,7 +383,7 @@ def main() -> int:
 
     doc = json.loads(RELEASES_PATH.read_text())
     releases: list[dict] = doc["releases"]
-    known = {r["id"] for r in releases}
+    by_id = {r["id"]: r for r in releases}
 
     cutoff = datetime.now(timezone.utc).timestamp() - LOOKBACK_HOURS * 3600
     added: list[dict] = []
@@ -400,14 +400,27 @@ def main() -> int:
                 continue
             candidate = (f"{pipeline['id_prefix']}-{m.group(0)}"
                          f"{pipeline['version_suffix']}{pipeline['id_suffix']}")
-            if candidate in known:
-                continue
+
+            # A cancelled or failed deploy is usually retried under the SAME
+            # version, so the id collides. Skipping on id alone left the log
+            # asserting a release was cancelled when the retry had shipped it —
+            # the exact opposite of the truth. Let a success supersede a
+            # non-success for the same version.
+            existing = by_id.get(candidate)
+            if existing is not None:
+                if existing.get("status") == "success" or run.get("conclusion") != "success":
+                    continue
+                print(f"  ~ {candidate} — superseding {existing.get('status')} attempt "
+                      f"with the successful re-run")
 
             entry = build_entry(pipeline, run, releases, token)
             if entry:
-                print(f"  + {entry['id']} — {entry['overview'][:80]}")
-                releases.append(entry)
-                known.add(entry["id"])
+                if existing is not None:
+                    releases[releases.index(existing)] = entry
+                else:
+                    releases.append(entry)
+                    print(f"  + {entry['id']} — {entry['overview'][:80]}")
+                by_id[entry["id"]] = entry
                 added.append(entry)
 
     if not added:
