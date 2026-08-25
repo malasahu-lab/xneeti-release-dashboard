@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.50-ec2",
+      "component": "backend",
+      "component_label": "Backend (EC2 + Scheduler)",
+      "version": "v1.1.50",
+      "deployed_at": "2026-08-25T11:55:29Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "c607977919c7",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32844633953",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Shipped: feat(scheduler): drop sb_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2964) (and 2 more)",
+      "highlights": [
+        "feat(scheduler): drop sb_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2964)",
+        "feat(scheduler): drop sb_adgroup_metrics and remove its retired code …",
+        "feat(scheduler): drop sb_ads_metrics and remove its retired code path…",
+        "Auto-generated from commit titles — no plain-language summary available."
+      ]
+    },
+    {
       "id": "be-v1.1.50-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -1414,5 +1435,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-08-25T10:12:06Z"
+  "generated_at": "2026-08-25T13:15:37Z"
 }
