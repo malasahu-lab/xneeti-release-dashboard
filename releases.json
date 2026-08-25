@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.50-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.50-backend",
+      "deployed_at": "2026-08-25T09:37:28Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "3196fb96bc95",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32832767728",
+      "risk_tag": null,
+      "status": "failed",
+      "overview": "Deploy failed — production is still running the previous version, nothing changed.",
+      "highlights": [
+        "Failed workflow run: https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32832767728"
+      ]
+    },
+    {
       "id": "fe-v1.15.22",
       "component": "frontend",
       "component_label": "Frontend",
@@ -1394,5 +1412,6 @@
       ],
       "status": "success"
     }
-  ]
+  ],
+  "generated_at": "2026-08-25T10:12:06Z"
 }
