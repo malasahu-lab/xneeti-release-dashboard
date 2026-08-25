@@ -27,15 +27,16 @@ const ago = (iso) => {
     return d + (d === 1 ? ' day ago' : ' days ago');
 };
 
-const chip = (r) =>
-    r.status === 'failed'
-        ? '<span class="chip failed">Deploy failed</span>'
-        : `<span class="chip ${r.status === 'failed' ? 'failed' : r.risk_tag}">${TAG_LABEL[r.risk_tag] || r.risk_tag || '—'}</span>`;
+const chip = (r) => {
+    if (r.status === 'failed') return '<span class="chip failed">Deploy failed</span>';
+    if (r.status === 'cancelled') return '<span class="chip cancelled">Cancelled</span>';
+    return `<span class="chip ${r.risk_tag}">${TAG_LABEL[r.risk_tag] || r.risk_tag || '—'}</span>`;
+};
 
 /** Latest successful release per component — powers the header dialog. */
 function liveReleases(all) {
     const pick = (pred) =>
-        all.filter((r) => r.status !== 'failed' && pred(r)).sort((a, b) => new Date(b.deployed_at) - new Date(a.deployed_at))[0];
+        all.filter((r) => r.status === 'success' && pred(r)).sort((a, b) => new Date(b.deployed_at) - new Date(a.deployed_at))[0];
     return [pick((r) => r.component === 'frontend'), pick((r) => r.component_label === 'Backend (ECS)')].filter(Boolean);
 }
 

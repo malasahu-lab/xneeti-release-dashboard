@@ -342,6 +342,13 @@
   const RISK_ORDER = ["breaking", "hotfix", "bugfix", "feature", "chore"];
   const FAILED = { label: "Deploy failed", color: "var(--critical)", wash: "var(--critical-wash)",
     icon: '<path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' };
+  const CANCELLED = { label: "Cancelled", color: "var(--ink-muted)", wash: "var(--surface-2)",
+    icon: '<circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4.8 4.8l6.4 6.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' };
+  // Anything that is not a plain success gets its own badge rather than a risk tag —
+  // nothing shipped, so there is nothing to classify.
+  const STATUS_META = { failed: FAILED, cancelled: CANCELLED };
+  const metaFor = (r) => STATUS_META[r.status] || RISK[r.risk_tag] || RISK.chore;
+  const badgeKey = (r) => (STATUS_META[r.status] ? r.status : r.risk_tag);
   const DAY = 86400000;
 
   const DEFAULTS = { limit: "all", dateMode: "7" };
@@ -351,7 +358,7 @@
     return new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
   }
   function fmtDay(d) { return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }); }
-  function riskIcon(tag) { return `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">${(tag === "failed" ? FAILED : RISK[tag]).icon}</svg>`; }
+  function riskIcon(tag) { return `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">${(STATUS_META[tag] || RISK[tag] || RISK.chore).icon}</svg>`; }
   function escapeHtml(s) { return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); }
   function highlight(text, needle) {
     if (!needle) return escapeHtml(text);
@@ -379,7 +386,7 @@
       });
     }
 
-    if (state.riskFilter === "failed") list = list.filter((r) => r.status === "failed");
+    if (STATUS_META[state.riskFilter]) list = list.filter((r) => r.status === state.riskFilter);
     else if (state.riskFilter) list = list.filter((r) => r.risk_tag === state.riskFilter);
 
     let searched = false;
@@ -427,7 +434,7 @@
   function renderLiveStrip() {
     const byComponent = {};
     for (const r of RELEASES) {
-      if (r.status === "failed") continue;
+      if (r.status !== "success") continue;
       if (!byComponent[r.component] || new Date(r.deployed_at) > new Date(byComponent[r.component].deployed_at)) byComponent[r.component] = r;
     }
     document.getElementById("liveStrip").innerHTML = ["frontend", "backend"].filter((c) => byComponent[c]).map((c) => {
@@ -461,9 +468,9 @@
 
   function renderPills() {
     const counts = {};
-    let failedCount = 0;
+    const statusCounts = {};
     for (const r of RELEASES) {
-      if (r.status === "failed") failedCount++;
+      if (STATUS_META[r.status]) statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
       else counts[r.risk_tag] = (counts[r.risk_tag] || 0) + 1;
     }
     const all = `<button class="pill" data-tag="" data-active="${state.riskFilter === null}">All <span class="count">${RELEASES.length}</span></button>`;
@@ -473,17 +480,18 @@
       const style = active ? ` style="--pill-color:${r.color}"` : "";
       return `<button class="pill" data-tag="${tag}" data-active="${active}"${style}>${riskIcon(tag)} ${r.label} <span class="count">${counts[tag]}</span></button>`;
     });
-    const failedPill = failedCount ? (() => {
-      const active = state.riskFilter === "failed";
-      const style = active ? ` style="--pill-color:${FAILED.color}"` : "";
-      return `<button class="pill" data-tag="failed" data-active="${active}"${style}>${riskIcon("failed")} ${FAILED.label} <span class="count">${failedCount}</span></button>`;
-    })() : "";
-    document.getElementById("pills").innerHTML = all + rest.join("") + failedPill;
+    const statusPills = Object.keys(STATUS_META).filter((k) => statusCounts[k]).map((k) => {
+      const meta = STATUS_META[k];
+      const active = state.riskFilter === k;
+      const style = active ? ` style="--pill-color:${meta.color}"` : "";
+      return `<button class="pill" data-tag="${k}" data-active="${active}"${style}>${riskIcon(k)} ${meta.label} <span class="count">${statusCounts[k]}</span></button>`;
+    }).join("");
+    document.getElementById("pills").innerHTML = all + rest.join("") + statusPills;
     document.querySelectorAll(".pill").forEach((btn) => btn.addEventListener("click", () => { state.riskFilter = btn.dataset.tag || null; render(); }));
   }
 
   function cardHtml(r) {
-    const risk = r.status === "failed" ? FAILED : RISK[r.risk_tag];
+    const risk = metaFor(r);
     const open = state.open.has(r.id);
     const q = state.search.trim();
     const runLine = r.run_url
@@ -493,7 +501,7 @@
       <div class="card-top">
         <span class="chip-neutral">${r.component_label}</span>
         <span class="version-tag">${highlight(r.version, q)}</span>
-        <span class="risk-badge">${riskIcon(r.status === "failed" ? "failed" : r.risk_tag)}${risk.label}</span>
+        <span class="risk-badge">${riskIcon(badgeKey(r))}${risk.label}</span>
         <time>${fmtDate(r.deployed_at)}</time>
       </div>
       <p class="overview">${highlight(r.overview, q)}</p>
@@ -513,7 +521,7 @@
   function describeView(count, beforeLimit, searched, dayInfo) {
     const parts = [];
     if (searched) parts.push(`matching <strong>"${escapeHtml(state.search.trim())}"</strong>`);
-    if (state.riskFilter) parts.push(`tagged <strong>${(state.riskFilter === "failed" ? FAILED : RISK[state.riskFilter]).label}</strong>`);
+    if (state.riskFilter) parts.push(`tagged <strong>${(STATUS_META[state.riskFilter] || RISK[state.riskFilter] || { label: state.riskFilter }).label}</strong>`);
     if (!searched && state.limit === "today" && dayInfo) {
       if (!dayInfo.fallback) {
         parts.push(`from <strong>today</strong>`);
@@ -554,12 +562,16 @@
       feed.innerHTML = `<div class="feed">${list.map(cardHtml).join("")}</div>`;
     } else {
       let html = "";
-      const failedGroup = list.filter((r) => r.status === "failed");
-      if (failedGroup.length) {
-        html += `<div class="section-head" style="--section-color:${FAILED.color}">${riskIcon("failed")} ${FAILED.label} <span class="n">— ${failedGroup.length}</span></div><div class="feed">${failedGroup.map(cardHtml).join("")}</div>`;
+      // Didn't-ship releases get their own section per status — a cancelled
+      // deploy and a broken one are different news.
+      for (const key of Object.keys(STATUS_META)) {
+        const group = list.filter((r) => r.status === key);
+        if (!group.length) continue;
+        const meta = STATUS_META[key];
+        html += `<div class="section-head" style="--section-color:${meta.color}">${riskIcon(key)} ${meta.label} <span class="n">— ${group.length}</span></div><div class="feed">${group.map(cardHtml).join("")}</div>`;
       }
       for (const tag of RISK_ORDER) {
-        const group = list.filter((r) => r.risk_tag === tag && r.status !== "failed");
+        const group = list.filter((r) => r.risk_tag === tag && !STATUS_META[r.status]);
         if (!group.length) continue;
         const risk = RISK[tag];
         html += `<div class="section-head" style="--section-color:${risk.color}">${riskIcon(tag)} ${risk.label} <span class="n">— ${group.length}</span></div><div class="feed">${group.map(cardHtml).join("")}</div>`;

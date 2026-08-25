@@ -12,10 +12,11 @@
       "ref_inferred": false,
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32832767728",
       "risk_tag": null,
-      "status": "failed",
-      "overview": "Deploy failed — production is still running the previous version, nothing changed.",
+      "status": "cancelled",
+      "overview": "Deploy cancelled before it finished — production is still running the previous version, nothing changed.",
       "highlights": [
-        "Failed workflow run: https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32832767728"
+        "Someone stopped this deploy deliberately rather than it breaking.",
+        "Cancelled workflow run: https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32832767728"
       ]
     },
     {

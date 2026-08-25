@@ -289,7 +289,11 @@ def build_entry(pipeline: dict, run: dict, existing: list[dict], token: str) -> 
     version = m.group(0) + pipeline["version_suffix"]
     entry_id = f"{pipeline['id_prefix']}-{version}{pipeline['id_suffix']}"
     head_sha = run["head_sha"]
-    failed = run.get("conclusion") != "success"
+    # A run can end several ways and they mean different things to QA. A
+    # cancelled deploy is somebody stopping it on purpose; a failed one broke.
+    # Both leave production on the old version, but only one needs chasing.
+    conclusion = run.get("conclusion")
+    shipped = conclusion == "success"
 
     entry = {
         "id": entry_id,
@@ -305,15 +309,25 @@ def build_entry(pipeline: dict, run: dict, existing: list[dict], token: str) -> 
         "ref_inferred": False,
         "run_url": run["html_url"],
         "risk_tag": None,
-        "status": "failed" if failed else "success",
+        "status": "success" if shipped else ("cancelled" if conclusion == "cancelled" else "failed"),
         "overview": "",
         "highlights": [],
     }
 
-    if failed:
-        entry["overview"] = ("Deploy failed — production is still running the previous "
-                             "version, nothing changed.")
-        entry["highlights"] = [f"Failed workflow run: {run['html_url']}"]
+    if not shipped:
+        if conclusion == "cancelled":
+            entry["overview"] = ("Deploy cancelled before it finished — production is still "
+                                 "running the previous version, nothing changed.")
+            entry["highlights"] = [
+                "Someone stopped this deploy deliberately rather than it breaking.",
+                f"Cancelled workflow run: {run['html_url']}",
+            ]
+        else:
+            entry["overview"] = ("Deploy failed — production is still running the previous "
+                                 "version, nothing changed.")
+            entry["highlights"] = [
+                f"Failed workflow run ({conclusion or 'no conclusion reported'}): {run['html_url']}",
+            ]
         return entry
 
     if pipeline["revert"]:
