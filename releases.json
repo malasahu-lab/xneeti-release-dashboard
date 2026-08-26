@@ -1,6 +1,91 @@
 {
   "releases": [
     {
+      "id": "fe-v1.15.23",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.15.23",
+      "deployed_at": "2026-08-26T08:02:13Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "ad9ccace5c4e",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/32945071098",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Shipped: Implement email normalization in invite flow and refactor related pay…",
+      "highlights": [
+        "Implement email normalization in invite flow and refactor related pay…",
+        "Auto-generated from commit titles — no plain-language summary available."
+      ]
+    },
+    {
+      "id": "be-v1.1.52-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.52-backend",
+      "deployed_at": "2026-08-26T07:33:31Z",
+      "deployed_by": "akshatgoyalxneeti",
+      "commit": "c7952bddd455",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32942334992",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Shipped: feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971) (and 5 more)",
+      "highlights": [
+        "feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971)",
+        "feat(scheduler): drop sp_targeting_summary and remove its retired code paths (XNEETI-3064)",
+        "chore(deps): pin @xneetitech/* to exact versions",
+        "feat(scheduler): drop sb_campaign_placement_metrics and remove its retired code paths (XNEETI-2968)",
+        "Auto-generated from commit titles — no plain-language summary available."
+      ]
+    },
+    {
+      "id": "be-v1.1.51-ec2",
+      "component": "backend",
+      "component_label": "Backend (EC2 + Scheduler)",
+      "version": "v1.1.51",
+      "deployed_at": "2026-08-26T07:20:13Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "469a3d148527",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32942079631",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Shipped: feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971) (and 4 more)",
+      "highlights": [
+        "feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971)",
+        "feat(scheduler): drop sp_targeting_summary and remove its retired code paths (XNEETI-3064)",
+        "feat(scheduler): drop sb_campaign_placement_metrics and remove its retired code paths (XNEETI-2968)",
+        "feat(scheduler): drop sb_purchased_product_metrics and remove its retired code paths (XNEETI-2969)",
+        "Auto-generated from commit titles — no plain-language summary available."
+      ]
+    },
+    {
+      "id": "be-v1.1.51-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.51-backend",
+      "deployed_at": "2026-08-26T07:15:23Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "469a3d148527",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32941045544",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Shipped: feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971) (and 4 more)",
+      "highlights": [
+        "feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971)",
+        "feat(scheduler): drop sp_targeting_summary and remove its retired code paths (XNEETI-3064)",
+        "feat(scheduler): drop sb_campaign_placement_metrics and remove its retired code paths (XNEETI-2968)",
+        "feat(scheduler): drop sb_purchased_product_metrics and remove its retired code paths (XNEETI-2969)",
+        "Auto-generated from commit titles — no plain-language summary available."
+      ]
+    },
+    {
       "id": "be-v1.1.50-ec2",
       "component": "backend",
       "component_label": "Backend (EC2 + Scheduler)",
@@ -1437,5 +1522,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-08-25T13:15:37Z"
+  "generated_at": "2026-08-26T08:04:04Z"
 }
