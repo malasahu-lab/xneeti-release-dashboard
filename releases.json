@@ -13,11 +13,10 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/33389347503",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "Shipped: Add XNEETI_ADMIN role check and update layout routes for External Ima… (and 1 more)",
+      "overview": "Redeploy of the same code as v1.15.24 — no new changes shipped.",
       "highlights": [
-        "Add XNEETI_ADMIN role check and update layout routes for External Ima…",
-        "Xneeti 3037",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "Identical commit to v1.15.24, deployed 10 minutes earlier.",
+        "A same-commit redeploy usually means a version bump or a repeated attempt; nothing in the application changed."
       ]
     },
     {
@@ -31,13 +30,16 @@
       "ref": "master",
       "ref_inferred": false,
       "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/33388673778",
-      "risk_tag": "chore",
+      "risk_tag": "feature",
       "status": "success",
-      "overview": "Shipped: Add XNEETI_ADMIN role check and update layout routes for External Ima… (and 1 more)",
+      "overview": "External Image Gen navigation is now available to authorized global and XNEETI administrators.",
       "highlights": [
-        "Add XNEETI_ADMIN role check and update layout routes for External Ima…",
-        "Xneeti 3037",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "External Image Gen routes can be accessed without completing the Amazon connection step.",
+        "Improved placement review for Amazon-only selections, including selections without placement values.",
+        "Added clearer labels and statuses for Amazon-to-Manual and Manual-to-Amazon conversions.",
+        "Improved handling of Sponsored Brands placement previews and bid optimization modes.",
+        "Updated navigation visibility to respond correctly when administrator permissions change.",
+        "Removed the duplicate External Image Gen entry from the admin layout."
       ]
     },
     {
@@ -51,12 +53,13 @@
       "ref": "master",
       "ref_inferred": false,
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/33386600646",
-      "risk_tag": "chore",
+      "risk_tag": "bugfix",
       "status": "success",
-      "overview": "Shipped: Update: updated bid optimisation table map",
+      "overview": "Improved advertising placement enrichment by using campaign data scoped to the selected profile.",
       "highlights": [
-        "Update: updated bid optimisation table map",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "Corrected bid-adjustment lookups to consistently apply profile-specific campaign information.",
+        "Improved bid-optimization filtering to prevent campaign data from being mixed across profiles.",
+        "Increased the accuracy and consistency of sponsored products and sponsored brands bid recommendations."
       ]
     },
     {
@@ -72,10 +75,9 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32955192559",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "Shipped: feat(search-term): adopt the new search-term contract",
+      "overview": "feat(search-term): adopt the new search-term contract.",
       "highlights": [
-        "feat(search-term): adopt the new search-term contract",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "No pull request description was available, so this is taken from the commit title."
       ]
     },
     {
@@ -89,12 +91,12 @@
       "ref": "master",
       "ref_inferred": false,
       "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/32945071098",
-      "risk_tag": "chore",
+      "risk_tag": "bugfix",
       "status": "success",
-      "overview": "Shipped: Implement email normalization in invite flow and refactor related pay…",
+      "overview": "Improved email handling in organization invitations by trimming spaces, standardizing capitalization, and removing duplicate addresses.",
       "highlights": [
-        "Implement email normalization in invite flow and refactor related pay…",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "Prevented blank contact entries from being included in invitation notifications.",
+        "Applied consistent email formatting across finance, owner, XAM, and point-of-contact details."
       ]
     },
     {
@@ -110,13 +112,9 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32942334992",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "Shipped: feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971) (and 5 more)",
+      "overview": "chore(deps): pin @xneetitech/* to exact versions.",
       "highlights": [
-        "feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971)",
-        "feat(scheduler): drop sp_targeting_summary and remove its retired code paths (XNEETI-3064)",
-        "chore(deps): pin @xneetitech/* to exact versions",
-        "feat(scheduler): drop sb_campaign_placement_metrics and remove its retired code paths (XNEETI-2968)",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "No pull request description was available, so this is taken from the commit title."
       ]
     },
     {
@@ -130,15 +128,16 @@
       "ref": "master",
       "ref_inferred": false,
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32942079631",
-      "risk_tag": "chore",
+      "risk_tag": "breaking",
       "status": "success",
-      "overview": "Shipped: feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971) (and 4 more)",
+      "overview": "Removed support for Sponsored Brands purchased-product reports.",
       "highlights": [
-        "feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971)",
-        "feat(scheduler): drop sp_targeting_summary and remove its retired code paths (XNEETI-3064)",
-        "feat(scheduler): drop sb_campaign_placement_metrics and remove its retired code paths (XNEETI-2968)",
-        "feat(scheduler): drop sb_purchased_product_metrics and remove its retired code paths (XNEETI-2969)",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "Runs a migration that DROPS a database table — irreversible, and the reports that used it will stop returning data.",
+        "The pull request carries a stated merge gate — check it was cleared before this shipped.",
+        "The pull request specifies a binding deploy order — check the pipelines went out in that order.",
+        "Requests for this report type are no longer accepted and will return an invalid-report error.",
+        "Existing in-progress report data is finalized, and related stored metrics are removed.",
+        "Retired the Sponsored Display gross and invalid traffic report."
       ]
     },
     {
@@ -152,15 +151,16 @@
       "ref": "master",
       "ref_inferred": false,
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32941045544",
-      "risk_tag": "chore",
+      "risk_tag": "breaking",
       "status": "success",
-      "overview": "Shipped: feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971) (and 4 more)",
+      "overview": "Removed support for Sponsored Brands purchased-product reports.",
       "highlights": [
-        "feat(scheduler): drop sd_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2971)",
-        "feat(scheduler): drop sp_targeting_summary and remove its retired code paths (XNEETI-3064)",
-        "feat(scheduler): drop sb_campaign_placement_metrics and remove its retired code paths (XNEETI-2968)",
-        "feat(scheduler): drop sb_purchased_product_metrics and remove its retired code paths (XNEETI-2969)",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "Runs a migration that DROPS a database table — irreversible, and the reports that used it will stop returning data.",
+        "The pull request carries a stated merge gate — check it was cleared before this shipped.",
+        "The pull request specifies a binding deploy order — check the pipelines went out in that order.",
+        "Requests for this report type are no longer accepted and will return an invalid-report error.",
+        "Existing in-progress report data is finalized, and related stored metrics are removed.",
+        "Retired the Sponsored Display gross and invalid traffic report."
       ]
     },
     {
@@ -174,14 +174,16 @@
       "ref": "master",
       "ref_inferred": false,
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32844633953",
-      "risk_tag": "chore",
+      "risk_tag": "breaking",
       "status": "success",
-      "overview": "Shipped: feat(scheduler): drop sb_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2964) (and 2 more)",
+      "overview": "Retired Sponsored Brands ad-group daily reporting and associated metric processing.",
       "highlights": [
-        "feat(scheduler): drop sb_gross_invalid_traffic_metrics and remove its retired code paths (XNEETI-2964)",
-        "feat(scheduler): drop sb_adgroup_metrics and remove its retired code …",
-        "feat(scheduler): drop sb_ads_metrics and remove its retired code path…",
-        "Auto-generated from commit titles — no plain-language summary available."
+        "Runs a migration that DROPS a database table — irreversible, and the reports that used it will stop returning data.",
+        "The pull request carries a stated merge gate — check it was cleared before this shipped.",
+        "The pull request specifies a binding deploy order — check the pipelines went out in that order.",
+        "Removed support for generating, scheduling, and consuming this report type.",
+        "Removed the associated stored metrics and data table.",
+        "Requests for retired report types now return a clear invalid-report-type response."
       ]
     },
     {

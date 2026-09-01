@@ -261,19 +261,137 @@ def summarize_with_claude(pipeline: dict, version: str, commits: list[str],
         return None
 
 
+CODERABBIT_RE = re.compile(
+    r"##\s*Summary by CodeRabbit\s*(.*?)(?:<!--\s*end of auto-generated|\Z)", re.S | re.I)
+CAT_RE = re.compile(r"^[*\-]\s*\*\*(.+?)\*\*:?\s*$")
+BULLET_RE = re.compile(r"^[*\-]\s+(.*\S)\s*$")
+JUNK_TITLE_RE = re.compile(r"^(xneeti[\s\-_]*\d+|update|updates|changes|fix|fixes|wip)\.?$", re.I)
+
+# Deterministic risk signals. These are the things a release log exists to
+# surface, and they must not depend on an API key being present.
+# (group, pattern, message). Only the first match within a group is emitted, so
+# a table drop does not produce two bullets saying the same thing.
+DANGER_PATTERNS = [
+    ("drop", re.compile(r"\bDROP\s+TABLE\b", re.I),
+     "Runs a migration that DROPS a database table — irreversible, and the "
+     "reports that used it will stop returning data."),
+    ("drop", re.compile(r"drop\s+[a-z0-9_]+\s+and remove its retired code paths", re.I),
+     "Permanently retires a reporting table and the code that fed it — irreversible."),
+    ("gate", re.compile(r"DO NOT MERGE BEFORE\s+([0-9]{4}-[0-9]{2}-[0-9]{2})", re.I),
+     "The pull request carries a stated merge gate — check it was cleared before this shipped."),
+    ("order", re.compile(r"^\s*##\s*Deploy ordering \(BINDING", re.I | re.M),
+     "The pull request specifies a binding deploy order — check the pipelines went out in that order."),
+    ("breaking", re.compile(r"\bBREAKING CHANGE\b", re.I),
+     "Flagged as a breaking change by the author."),
+]
+
+CATEGORY_RANK = [
+    ("breaking", ("breaking",)),
+    ("feature", ("new feature", "feature")),
+    ("bugfix", ("bug fix", "bugfix", "fix")),
+    ("chore", ("refactor", "chore", "documentation", "test", "style", "performance")),
+]
+
+
+def repair_title(pr: dict) -> str:
+    """GitHub truncates long PR titles at ~70 chars and the author's original
+    text continues at the top of the body. Stitch the two halves back together
+    so the log does not show 'External Ima…'."""
+    title = (pr.get("title") or "").rstrip()
+    body = (pr.get("body") or "").lstrip()
+    if title.endswith("…") and body.startswith("…"):
+        tail = body.split("\n", 1)[0].lstrip("…").strip()
+        if tail:
+            return (title[:-1].rstrip() + tail).strip()
+    return title
+
+
+def coderabbit_sections(body: str) -> dict[str, list[str]]:
+    """CodeRabbit posts a plain-language summary into most PR bodies. It is
+    already written for humans, so prefer it over any title we could scrape."""
+    m = CODERABBIT_RE.search(body or "")
+    if not m:
+        return {}
+    out: dict[str, list[str]] = {}
+    current = None
+    for raw in m.group(1).splitlines():
+        line = raw.strip()
+        cat = CAT_RE.match(line)
+        if cat:
+            current = cat.group(1).strip()
+            out.setdefault(current, [])
+            continue
+        bullet = BULLET_RE.match(line)
+        if bullet and current and not bullet.group(1).startswith("**"):
+            text = bullet.group(1).strip()
+            if text:
+                out[current].append(text)
+    return {k: v for k, v in out.items() if v}
+
+
 def summarize_mechanically(commits: list[str], prs: list[dict]) -> dict:
-    """Fallback when Claude is unavailable. Honest and dull rather than absent —
-    it says plainly that it is not a real summary so nobody mistakes it for one."""
-    titles = [pr["title"] for pr in prs] or [c for c in commits if not c.startswith("Merge ")]
-    if titles:
-        overview = f"Shipped: {titles[0]}" + (f" (and {len(titles) - 1} more)" if len(titles) > 1 else "")
+    """Used when Claude is unavailable. Builds the best summary obtainable
+    without a model: CodeRabbit's own prose where it exists, repaired PR titles
+    otherwise, plus deterministic warnings for migrations and merge gates."""
+    haystack = "\n".join(commits) + "\n" + "\n".join(
+        f"{pr.get('title','')}\n{pr.get('body','') or ''}" for pr in prs)
+
+    warnings, fired = [], set()
+    for group, pattern, message in DANGER_PATTERNS:
+        if group not in fired and pattern.search(haystack):
+            fired.add(group)
+            warnings.append(message)
+
+    sections: dict[str, list[str]] = {}
+    for pr in prs:
+        for cat, bullets in coderabbit_sections(pr.get("body") or "").items():
+            sections.setdefault(cat, []).extend(bullets)
+
+    risk = "chore"
+    for tag, keys in CATEGORY_RANK:
+        if any(any(k in cat.lower() for k in keys) for cat in sections):
+            risk = tag
+            break
+    if warnings:
+        risk = "breaking"
+
+    ordered: list[str] = []
+    for _, keys in CATEGORY_RANK:
+        for cat, bullets in sections.items():
+            if any(k in cat.lower() for k in keys):
+                ordered.extend(bullets)
+    for bullets in sections.values():          # anything uncategorised
+        for b in bullets:
+            if b not in ordered:
+                ordered.append(b)
+
+    titles = [t for t in (repair_title(pr) for pr in prs)
+              if t and not JUNK_TITLE_RE.match(t)]
+    if not titles:
+        titles = [c for c in commits if not c.startswith("Merge ")]
+
+    if ordered:
+        overview = ordered[0]
+        highlights = warnings + [b for b in ordered[1:] if b != overview]
+    elif titles:
+        overview = titles[0].rstrip(".") + "."
+        highlights = warnings + titles[1:]
+        if not warnings and len(titles) <= 1:
+            highlights = highlights + [
+                "No pull request description was available, so this is taken from the commit title."
+            ]
     else:
         overview = "Deployed to production; no pull requests were resolved for this range."
-    return {
-        "overview": overview,
-        "highlights": [*titles[:4], "Auto-generated from commit titles — no plain-language summary available."],
-        "risk_tag": "chore",
-    }
+        highlights = warnings
+
+    # dedupe, keep order, cap
+    final, seen = [], set()
+    for h in highlights:
+        if h not in seen:
+            seen.add(h)
+            final.append(h)
+
+    return {"overview": overview, "highlights": final[:6], "risk_tag": risk}
 
 
 # --------------------------------------------------------------------------- #
@@ -339,9 +457,23 @@ def build_entry(pipeline: dict, run: dict, existing: list[dict], token: str) -> 
 
     # Diff against the last logged release for the SAME target, so an EC2 entry
     # compares against the previous EC2 entry rather than the ECS one.
-    base = next((r["commit"] for r in existing
-                 if r["component_label"] == pipeline["label"] and r.get("status") == "success"
-                 and r.get("commit")), None)
+    prior = next((r for r in existing
+                  if r["component_label"] == pipeline["label"] and r.get("status") == "success"
+                  and r.get("commit")), None)
+    base = prior["commit"] if prior else None
+
+    # A version bump with no code change behind it. Saying "no pull requests
+    # were resolved" reads like something went wrong; it did not.
+    if base and base == head_sha[:len(base)]:
+        entry["risk_tag"] = "chore"
+        entry["overview"] = (f"Redeploy of the same code as {prior['version']} — "
+                             f"no new changes shipped.")
+        entry["highlights"] = [
+            f"Identical commit to {prior['version']}, deployed earlier.",
+            "A same-commit redeploy usually means a version bump or a repeated "
+            "attempt; nothing in the application changed.",
+        ]
+        return entry
 
     commits: list[str] = []
     prs: list[dict] = []
