@@ -1,6 +1,71 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.55-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.55-backend",
+      "deployed_at": "2026-09-01T13:10:13Z",
+      "deployed_by": "amank0753",
+      "commit": "fc191cf33663",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/33510836523",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added Automated Pricing capabilities for catalog browsing, ASIN details, market-data retrieval, price refreshes, configuration, updates, and pricing-history logs.",
+      "highlights": [
+        "Added bulk automation setup with validation, per-item results, preview-row support, and configurable pricing limits.",
+        "Added cached market data with optional forced refresh and Amazon pricing insights, including Buy Box, competitor, Prime, and typical-price information.",
+        "Added a comprehensive Automated Pricing API integration guide covering authentication, endpoints, UI flows, caching, validation, and error handling."
+      ]
+    },
+    {
+      "id": "fe-v1.16.2",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.16.2",
+      "deployed_at": "2026-09-01T12:53:22Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "4505ecf56c11",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/33509497948",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Campaign tables now support selecting from available API-backed columns.",
+      "highlights": [
+        "Column selections reset based on the currently available fields.",
+        "Campaigns default to sorting by budget amount in descending order.",
+        "Added a Buy Box Automation dashboard for searching, selecting, and managing ASINs.",
+        "Added automation policy creation, editing, enabling, and disabling for individual or multiple ASINs.",
+        "Added market pricing details, manual price refresh, evaluation history, status indicators, and pagination.",
+        "Added validation, cooldown handling, partial-result reporting, retry support, and clear loading, empty, error, and unauthorized states."
+      ]
+    },
+    {
+      "id": "fe-v1.16.1",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.16.1",
+      "deployed_at": "2026-09-01T11:09:56Z",
+      "deployed_by": "yadav-anant",
+      "commit": "ea536872a8ec",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/33500414080",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Campaign tables now support selecting from available API-backed columns.",
+      "highlights": [
+        "Column selections reset based on the currently available fields.",
+        "Campaigns default to sorting by budget amount in descending order.",
+        "Limited campaign navigation and filters to currently supported options.",
+        "Removed unavailable performance charts, metrics, and the “Created By” filter.",
+        "Improved spacing in the campaign page layout."
+      ]
+    },
+    {
       "id": "fe-v1.16.0",
       "component": "frontend",
       "component_label": "Frontend",
@@ -1602,5 +1667,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-08-31T14:04:03Z"
+  "generated_at": "2026-09-01T14:57:42Z"
 }
