@@ -5,13 +5,18 @@ Both pages share the same chrome (sidebar, top bar, release dialog), so the
 markup lives once in _shell.html and each page supplies only its own script.
 Run: python3 build.py
 """
+import hashlib
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 read = lambda n: open(os.path.join(HERE, n)).read()
 write = lambda n, s: open(os.path.join(HERE, n), 'w').write(s)
 
-HEAD = '<!DOCTYPE html>\n<meta charset="utf-8">\n<title>%s</title>\n<link rel="stylesheet" href="styles.css">\n'
+# Fingerprint the stylesheet so a rebuild can't be masked by a cached copy —
+# an edit that silently does not apply is a genuinely confusing way to lose time.
+CSS_VER = hashlib.md5(read('styles.css').encode()).hexdigest()[:8]
+HEAD = ('<!DOCTYPE html>\n<meta charset="utf-8">\n<title>%s</title>\n'
+        '<link rel="stylesheet" href="styles.css?v=' + CSS_VER + '">\n')
 FOOT = ('\n\n<div class="src" id="srcPill"><span class="led"></span> Loading…</div>\n\n'
         '<script src="data-fallback.js"></script>\n<script src="app.js"></script>\n<script>\n%s\n</script>\n')
 

@@ -6,7 +6,15 @@
  */
 
 let ALL = [];
-const state = { page: 1, size: 25, search: '', type: '', tag: '' };
+const state = { page: 1, size: 25, search: '', type: '', tag: '', from: '', to: '' };
+
+/* The table shows local time, so the date filter has to compare local dates
+ * too. Comparing the UTC date would put anything deployed between midnight
+ * and 05:30 IST on the wrong day. */
+const localDay = (iso) => {
+    const d = new Date(iso);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 
 /* the release dialog stays available on this page too */
 const relBtn = document.getElementById('relBtn');
@@ -80,6 +88,8 @@ function filtered() {
     if (state.tag) {
         list = list.filter((r) => (state.tag === 'failed' ? r.status === 'failed' : r.risk_tag === state.tag));
     }
+    if (state.from) list = list.filter((r) => localDay(r.deployed_at) >= state.from);
+    if (state.to) list = list.filter((r) => localDay(r.deployed_at) <= state.to);
     if (state.search.trim()) {
         const q = state.search.trim().toLowerCase();
         list = list.filter(
@@ -105,7 +115,14 @@ function pageNumbers(cur, total) {
  * the old, detached element, so the caret vanished after one character.
  * Typing now only re-renders the rows and the pager. */
 
+/** Stop the picker offering dates with no releases in them. */
+function dateBounds() {
+    const days = ALL.map((r) => localDay(r.deployed_at)).sort();
+    return { min: days[0] || '', max: days[days.length - 1] || '' };
+}
+
 function toolbarHTML() {
+    const bounds = dateBounds();
     return `
     <h1 class="page">Release Management</h1>
     <p class="dek">Every production deploy, translated into plain language — what shipped, who shipped it, and how risky it was.</p>
@@ -132,6 +149,19 @@ function toolbarHTML() {
         <option value="50">50 / page</option>
         <option value="100">100 / page</option>
       </select>
+
+      <div class="cal-wrap">
+        <button class="field cal-btn" id="fDate" aria-haspopup="dialog" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>
+          </svg>
+          <span id="fDateLabel">${esc(dateLabel())}</span>
+          <span class="caret">⌄</span>
+        </button>
+        <div class="cal-pop" id="calPop" role="dialog" aria-label="Filter by date" hidden></div>
+      </div>
+
+      <button class="field clear" id="fClear" ${state.from || state.to || state.search || state.type || state.tag ? '' : 'hidden'}>Clear filters</button>
     </div>
 
     <div class="card" style="overflow:hidden">
@@ -180,6 +210,12 @@ function pagerHTML(total, start, pages) {
 
 /** Re-render only the rows and pager. The toolbar — and the focused input —
  *  are left alone. */
+function afterFilterChange() {
+    const clear = document.getElementById('fClear');
+    if (clear) clear.hidden = !(state.from || state.to || state.search || state.type || state.tag);
+    renderRows();
+}
+
 function renderRows() {
     const all = filtered();
     const total = all.length;
@@ -211,18 +247,201 @@ function renderList() {
 
     const search = document.getElementById('search');
     search.value = state.search;
-    search.oninput = () => { state.search = search.value; state.page = 1; renderRows(); };
+    search.oninput = () => { state.search = search.value; state.page = 1; afterFilterChange(); };
 
     const bind = (id, key, cast = (v) => v) => {
         const el = document.getElementById(id);
         el.value = String(state[key]);
-        el.onchange = () => { state[key] = cast(el.value); state.page = 1; renderRows(); };
+        el.onchange = () => { state[key] = cast(el.value); state.page = 1; afterFilterChange(); };
     };
     bind('fType', 'type');
     bind('fTag', 'tag');
     bind('fSize', 'size', Number);
 
+    wireCalendar();
+
+    document.getElementById('fClear').onclick = () => {
+        Object.assign(state, { search: '', type: '', tag: '', from: '', to: '', page: 1 });
+        renderList();
+    };
+
     renderRows();
+}
+
+
+/* ------------------------------------------------------------------ *
+ * Date filter — one calendar, single date or range.
+ *
+ * First click sets the start and filters to that single day. A second
+ * click extends it into a range. A third starts over. Days that actually
+ * have releases are marked, so you can see where the deploys are rather
+ * than hunting through empty dates.
+ * ------------------------------------------------------------------ */
+
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+const DOW = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+let calMonth = null;    // Date pinned to the 1st of the displayed month
+let pendingStart = null; // set while a range is half-chosen
+
+const prettyDay = (ymd) => {
+    const [y, m, d] = ymd.split('-').map(Number);
+    return `${d} ${MONTHS[m - 1].slice(0, 3)} ${y}`;
+};
+
+function dateLabel() {
+    if (!state.from && !state.to) return 'All dates';
+    if (state.from === state.to) return prettyDay(state.from);
+    return `${prettyDay(state.from)} – ${prettyDay(state.to)}`;
+}
+
+/** How many releases fall on each local day — drives the dots in the grid. */
+function dayCounts() {
+    const counts = {};
+    for (const r of ALL) {
+        const d = localDay(r.deployed_at);
+        counts[d] = (counts[d] || 0) + 1;
+    }
+    return counts;
+}
+
+function calendarHTML() {
+    const bounds = dateBounds();
+    const counts = dayCounts();
+    const first = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1);
+    const daysInMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 0).getDate();
+    const lead = first.getDay();
+
+    const cells = [];
+    for (let i = 0; i < lead; i++) cells.push('<span class="cal-day blank"></span>');
+    for (let d = 1; d <= daysInMonth; d++) {
+        const ymd = `${calMonth.getFullYear()}-${String(calMonth.getMonth() + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const outside = (bounds.min && ymd < bounds.min) || (bounds.max && ymd > bounds.max);
+        const lo = pendingStart || state.from;
+        const hi = pendingStart ? pendingStart : state.to;
+        const selected = lo && hi && ymd >= (lo < hi ? lo : hi) && ymd <= (lo < hi ? hi : lo);
+        const edge = ymd === state.from || ymd === state.to || ymd === pendingStart;
+        cells.push(
+            `<button class="cal-day${selected ? ' in' : ''}${edge ? ' edge' : ''}${outside ? ' out' : ''}"` +
+            `${outside ? ' disabled' : ''} data-d="${ymd}">${d}` +
+            `${counts[ymd] ? `<i class="cal-dot" title="${counts[ymd]} release${counts[ymd] > 1 ? 's' : ''}"></i>` : ''}` +
+            `</button>`);
+    }
+
+    const canPrev = !bounds.min || `${calMonth.getFullYear()}-${String(calMonth.getMonth() + 1).padStart(2, '0')}` > bounds.min.slice(0, 7);
+    const canNext = !bounds.max || `${calMonth.getFullYear()}-${String(calMonth.getMonth() + 1).padStart(2, '0')}` < bounds.max.slice(0, 7);
+
+    return `
+    <div class="cal-presets">
+      <button data-preset="today">Today</button>
+      <button data-preset="7">Last 7 days</button>
+      <button data-preset="30">Last 30 days</button>
+      <button data-preset="all">All time</button>
+    </div>
+    <div class="cal-head">
+      <button class="cal-nav" data-nav="-1" ${canPrev ? '' : 'disabled'}>‹</button>
+      <strong>${MONTHS[calMonth.getMonth()]} ${calMonth.getFullYear()}</strong>
+      <button class="cal-nav" data-nav="1" ${canNext ? '' : 'disabled'}>›</button>
+    </div>
+    <div class="cal-grid">
+      ${DOW.map((d) => `<span class="cal-dow">${d}</span>`).join('')}
+      ${cells.join('')}
+    </div>
+    <div class="cal-foot">
+      <span>${pendingStart ? 'Pick an end date, or click the same day again' : 'Click a day, or a second day for a range'}</span>
+    </div>`;
+}
+
+function paintCalendar() {
+    const pop = document.getElementById('calPop');
+    pop.innerHTML = calendarHTML();
+
+    pop.querySelectorAll('[data-nav]').forEach((b) => {
+        b.onclick = (e) => {
+            e.stopPropagation();
+            calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + Number(b.dataset.nav), 1);
+            paintCalendar();
+        };
+    });
+
+    pop.querySelectorAll('[data-preset]').forEach((b) => {
+        b.onclick = (e) => {
+            e.stopPropagation();
+            const p = b.dataset.preset;
+            if (p === 'all') { state.from = state.to = ''; }
+            else {
+                const end = new Date();
+                const start = new Date();
+                if (p !== 'today') start.setDate(start.getDate() - (Number(p) - 1));
+                state.from = localDay(start);
+                state.to = localDay(end);
+            }
+            pendingStart = null;
+            commitDate();
+            closeCalendar();
+        };
+    });
+
+    pop.querySelectorAll('[data-d]').forEach((b) => {
+        b.onclick = (e) => {
+            e.stopPropagation();
+            const d = b.dataset.d;
+            if (!pendingStart) {
+                // First click: filter to that single day straight away.
+                pendingStart = d;
+                state.from = state.to = d;
+            } else {
+                state.from = d < pendingStart ? d : pendingStart;
+                state.to = d < pendingStart ? pendingStart : d;
+                pendingStart = null;
+            }
+            commitDate();
+            paintCalendar();
+            if (!pendingStart) closeCalendar();
+        };
+    });
+}
+
+function commitDate() {
+    state.page = 1;
+    const lbl = document.getElementById('fDateLabel');
+    if (lbl) lbl.textContent = dateLabel();
+    const btn = document.getElementById('fDate');
+    if (btn) btn.classList.toggle('on', Boolean(state.from || state.to));
+    afterFilterChange();
+}
+
+function openCalendar() {
+    const bounds = dateBounds();
+    const anchor = state.to || state.from || bounds.max;
+    calMonth = anchor ? new Date(Number(anchor.slice(0, 4)), Number(anchor.slice(5, 7)) - 1, 1) : new Date();
+    pendingStart = null;
+    document.getElementById('calPop').hidden = false;
+    document.getElementById('fDate').setAttribute('aria-expanded', 'true');
+    paintCalendar();
+}
+
+function closeCalendar() {
+    const pop = document.getElementById('calPop');
+    if (pop) pop.hidden = true;
+    pendingStart = null;
+    const btn = document.getElementById('fDate');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+function wireCalendar() {
+    const btn = document.getElementById('fDate');
+    const pop = document.getElementById('calPop');
+    btn.classList.toggle('on', Boolean(state.from || state.to));
+
+    btn.onclick = (e) => {
+        e.stopPropagation();
+        if (pop.hidden) openCalendar(); else closeCalendar();
+    };
+    pop.onclick = (e) => e.stopPropagation();
+    document.addEventListener('click', () => { if (!pop.hidden) closeCalendar(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pop.hidden) closeCalendar(); });
 }
 
 /* ---------------- detail ---------------- */
