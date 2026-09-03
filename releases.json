@@ -1,6 +1,28 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.56-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.56-backend",
+      "deployed_at": "2026-09-03T10:20:01Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "b5def02c723c",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/33742668066",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added Walmart performance reporting with overview, item, campaign, and keyword analytics.",
+      "highlights": [
+        "Added Walmart report uploads with secure upload links and processing status tracking.",
+        "Added support for five Walmart report types, including advertising and sales reports.",
+        "Added date-range filtering, weekly/monthly views, pagination, sorting, campaign drill-downs, and freshness metadata.",
+        "Added validation and processing for Walmart Seller Center CSV files.",
+        "Walmart reporting is available only to eligible Walmart-enabled organizations."
+      ]
+    },
+    {
       "id": "be-v1.1.55-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -1667,5 +1689,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-01T14:57:42Z"
+  "generated_at": "2026-09-03T10:45:34Z"
 }
