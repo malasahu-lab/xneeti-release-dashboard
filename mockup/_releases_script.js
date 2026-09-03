@@ -100,15 +100,13 @@ function pageNumbers(cur, total) {
     return [1, -1, cur - 1, cur, cur + 1, -2, total];
 }
 
-function renderList() {
-    const all = filtered();
-    const total = all.length;
-    const pages = Math.max(1, Math.ceil(total / state.size));
-    if (state.page > pages) state.page = pages;
-    const start = (state.page - 1) * state.size;
-    const rows = all.slice(start, start + state.size);
+/* The toolbar is rendered ONCE. Rebuilding the whole view on every keystroke
+ * destroyed the input mid-typing — the focus() call afterwards was aiming at
+ * the old, detached element, so the caret vanished after one character.
+ * Typing now only re-renders the rows and the pager. */
 
-    document.getElementById('view').innerHTML = `
+function toolbarHTML() {
+    return `
     <h1 class="page">Release Management</h1>
     <p class="dek">Every production deploy, translated into plain language — what shipped, who shipped it, and how risky it was.</p>
 
@@ -146,29 +144,30 @@ function renderList() {
           <th style="width:180px">Date &amp; time</th>
           <th>Short description</th>
         </tr></thead>
-        <tbody>
-          ${
-              rows.length
-                  ? rows
-                        .map(
-                            (r) => `
-            <tr data-id="${esc(r.id)}">
-              <td class="ver">${esc(r.version)}</td>
-              <td class="type">${esc(LABEL_SHORT[r.component_label] || r.component_label)}</td>
-              <td>${chip(r)}</td>
-              <td class="by">@${esc(r.deployed_by)}</td>
-              <td class="when">${fmt(r.deployed_at)}</td>
-              <td class="desc"><span title="${esc(r.overview)}">${esc(r.overview)}</span></td>
-            </tr>`,
-                        )
-                        .join('')
-                  : `<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--ink-3)">No releases match these filters.</td></tr>`
-          }
-        </tbody>
+        <tbody id="rows"></tbody>
       </table>
     </div>
 
-    <div class="pager">
+    <div class="pager" id="pager"></div>`;
+}
+
+function rowsHTML(rows) {
+    if (!rows.length) {
+        return `<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--ink-3)">No releases match these filters.</td></tr>`;
+    }
+    return rows.map((r) => `
+      <tr data-id="${esc(r.id)}">
+        <td class="ver">${esc(r.version)}</td>
+        <td class="type">${esc(LABEL_SHORT[r.component_label] || r.component_label)}</td>
+        <td>${chip(r)}</td>
+        <td class="by">@${esc(r.deployed_by)}</td>
+        <td class="when">${fmt(r.deployed_at)}</td>
+        <td class="desc"><span title="${esc(r.overview)}">${esc(r.overview)}</span></td>
+      </tr>`).join('');
+}
+
+function pagerHTML(total, start, pages) {
+    return `
       <div class="pager-info">${total ? `Showing ${start + 1}–${Math.min(start + state.size, total)} of ${total} releases` : ''}</div>
       <div class="pager-btns">
         <button class="pg" id="prev" ${state.page === 1 ? 'disabled' : ''}>‹</button>
@@ -176,37 +175,54 @@ function renderList() {
             .map((n) => (n < 0 ? `<span class="pg dots">…</span>` : `<button class="pg ${n === state.page ? 'on' : ''}" data-pg="${n}">${n}</button>`))
             .join('')}
         <button class="pg" id="next" ${state.page === pages ? 'disabled' : ''}>›</button>
-      </div>
-    </div>`;
+      </div>`;
+}
 
-    const s = document.getElementById('search');
-    s.oninput = () => {
-        state.search = s.value;
-        state.page = 1;
-        renderList();
-        s.focus();
-        s.setSelectionRange(s.value.length, s.value.length);
-    };
-    const t = document.getElementById('fType');
-    t.value = state.type;
-    t.onchange = () => { state.type = t.value; state.page = 1; renderList(); };
-    const g = document.getElementById('fTag');
-    g.value = state.tag;
-    g.onchange = () => { state.tag = g.value; state.page = 1; renderList(); };
-    const z = document.getElementById('fSize');
-    z.value = String(state.size);
-    z.onchange = () => { state.size = Number(z.value); state.page = 1; renderList(); };
+/** Re-render only the rows and pager. The toolbar — and the focused input —
+ *  are left alone. */
+function renderRows() {
+    const all = filtered();
+    const total = all.length;
+    const pages = Math.max(1, Math.ceil(total / state.size));
+    if (state.page > pages) state.page = pages;
+    const start = (state.page - 1) * state.size;
+
+    document.getElementById('rows').innerHTML = rowsHTML(all.slice(start, start + state.size));
+    document.getElementById('pager').innerHTML = pagerHTML(total, start, pages);
 
     document.querySelectorAll('tbody tr[data-id]').forEach((tr) => {
         tr.onclick = () => { location.hash = '/' + tr.dataset.id; };
     });
     document.querySelectorAll('[data-pg]').forEach((b) => {
-        b.onclick = () => { state.page = Number(b.dataset.pg); renderList(); document.querySelector('.content').scrollTop = 0; };
+        b.onclick = () => {
+            state.page = Number(b.dataset.pg);
+            renderRows();
+            document.querySelector('.content').scrollTop = 0;
+        };
     });
     const p = document.getElementById('prev');
     const n = document.getElementById('next');
-    if (p) p.onclick = () => { if (state.page > 1) { state.page--; renderList(); } };
-    if (n) n.onclick = () => { if (state.page < pages) { state.page++; renderList(); } };
+    if (p) p.onclick = () => { if (state.page > 1) { state.page--; renderRows(); } };
+    if (n) n.onclick = () => { if (state.page < pages) { state.page++; renderRows(); } };
+}
+
+function renderList() {
+    document.getElementById('view').innerHTML = toolbarHTML();
+
+    const search = document.getElementById('search');
+    search.value = state.search;
+    search.oninput = () => { state.search = search.value; state.page = 1; renderRows(); };
+
+    const bind = (id, key, cast = (v) => v) => {
+        const el = document.getElementById(id);
+        el.value = String(state[key]);
+        el.onchange = () => { state[key] = cast(el.value); state.page = 1; renderRows(); };
+    };
+    bind('fType', 'type');
+    bind('fTag', 'tag');
+    bind('fSize', 'size', Number);
+
+    renderRows();
 }
 
 /* ---------------- detail ---------------- */
