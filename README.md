@@ -59,9 +59,6 @@ explains what shipped, why it matters, and how risky it was.
 | `index.html` | The dashboard. One self-contained file — no build step, no dependencies. |
 | `releases.json` | The release log. Source of truth, committed to git. |
 | `.github/workflows/` | The hourly job that keeps the log current, with no manual step. |
-| `scripts/` | The release logger that job runs — and how to set up its two secrets. |
-| `automation/` | The earlier Slack-based routine. **Superseded** — see `scripts/README.md`. |
-| `db/` | A planned Postgres migration. **Not active** — see `db/README.md`. |
 | `mockup/` | A clickable mockup showing how this would look merged into the Xneeti dashboard. |
 
 ## The dashboard
@@ -148,3 +145,14 @@ Not features — findings, from correlating deploys against commits:
 3. **Frontend/backend drift warning** — the pattern above happened twice; the
    dashboard should catch the third.
 4. **QA status per release** — needs the database migration in `db/`.
+
+
+## Where the automation lives
+
+This repo holds the **published dashboard and its data only**. The pipeline that
+writes `releases.json` — the workflow, the correlation script and the notes that
+name internal repositories and deploy workflows — lives in a separate private
+repo and commits here on a schedule.
+
+That split is deliberate: the site has to be public to be viewable, but none of
+the machinery behind it does.
