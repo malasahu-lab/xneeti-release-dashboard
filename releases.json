@@ -1,6 +1,24 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.56-ec2",
+      "component": "backend",
+      "component_label": "Backend (EC2 + Scheduler)",
+      "version": "v1.1.56",
+      "deployed_at": "2026-09-03T11:36:56Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "b5def02c723c",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/33750516559",
+      "risk_tag": null,
+      "status": "failed",
+      "overview": "Deploy failed — production is still running the previous version, nothing changed.",
+      "highlights": [
+        "Failed workflow run (failure): https://github.com/XNeetiTech/xneeti-monolith/actions/runs/33750516559"
+      ]
+    },
+    {
       "id": "be-v1.1.56-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -1689,5 +1707,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-03T10:45:34Z"
+  "generated_at": "2026-09-03T12:31:06Z"
 }
