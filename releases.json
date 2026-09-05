@@ -1,6 +1,50 @@
 {
   "releases": [
     {
+      "id": "fe-v1.16.5",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.16.5",
+      "deployed_at": "2026-09-05T07:30:43Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "76fab65cecdb",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/33952369299",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added filtering for ASINs by automation status and current price range.",
+      "highlights": [
+        "Added filter controls with validation, reset, apply, and clear-all actions.",
+        "Added removable active-filter chips.",
+        "Added clearer empty-state messaging for filtered results and unsynced catalogs.",
+        "Added consistent automation status labels and ordering."
+      ]
+    },
+    {
+      "id": "be-v1.1.58-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.58-backend",
+      "deployed_at": "2026-09-05T06:46:17Z",
+      "deployed_by": "amank0753",
+      "commit": "591b1c0010b4",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/33950321254",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added filtering for ASINs by automation status and effective price range.",
+      "highlights": [
+        "Added structured pricing-log details, including sweep identifiers and evaluation reasons.",
+        "Automated pricing now supports scheduled sweep evaluations with dry-run outcomes and expanded hold/skip statuses.",
+        "Added a limit of 50 enabled ASINs per organization.",
+        "Seller identity and current price are recorded and repaired when missing.",
+        "Enforced positive `cutFactor` values from 0.01 through 99.99.",
+        "Prevented invalid reversed price ranges."
+      ]
+    },
+    {
       "id": "fe-v1.16.4",
       "component": "frontend",
       "component_label": "Frontend",
@@ -1769,5 +1813,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-04T09:39:54Z"
+  "generated_at": "2026-09-05T09:52:15Z"
 }
