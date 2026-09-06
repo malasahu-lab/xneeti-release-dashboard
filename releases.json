@@ -1,6 +1,28 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.59-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.59-backend",
+      "deployed_at": "2026-09-06T17:03:37Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "6ecdb0e1f348",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34046992205",
+      "risk_tag": "bugfix",
+      "status": "success",
+      "overview": "Improved report data handling so missing, blank, invalid, or non-finite numeric values are treated as empty instead of misleading numbers.",
+      "highlights": [
+        "Preserved explicit zero values for keyword Target ROAS metrics.",
+        "Enabled reports for different periods to publish concurrently without interfering with each other.",
+        "Prevented duplicate processing for the same report period while another upload is in progress.",
+        "Improved error handling so lock-release issues no longer obscure the original publishing failure.",
+        "Added coverage for concurrent period-based uploads, separate data ranges, and completed processing history records."
+      ]
+    },
+    {
       "id": "fe-v1.16.5",
       "component": "frontend",
       "component_label": "Frontend",
@@ -1813,5 +1835,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-05T09:52:15Z"
+  "generated_at": "2026-09-06T17:11:20Z"
 }
