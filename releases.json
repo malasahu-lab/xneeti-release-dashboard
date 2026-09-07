@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.60-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.60-backend",
+      "deployed_at": "2026-09-07T07:49:11Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "25300c38388c",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34096528208",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Walmart report uploads can use a dedicated queue when configured, while retaining fallback behavior.",
+      "highlights": [
+        "Added an independently configurable Walmart report consumer with controlled startup, sequential processing, and graceful shutdown.",
+        "Reports now distinguish successful publishing from files skipped because another process holds the lock.",
+        "Improved handling of malformed, terminal, invalid, and non-Walmart messages to prevent incorrect deletions or unnecessary retries.",
+        "AWS access and temporary infrastructure failures are handled more safely, allowing eligible messages to be retried."
+      ]
+    },
+    {
       "id": "be-v1.1.59-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -1835,5 +1856,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-06T17:11:20Z"
+  "generated_at": "2026-09-07T10:15:51Z"
 }
