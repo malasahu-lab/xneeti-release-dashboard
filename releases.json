@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.63-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.63-backend",
+      "deployed_at": "2026-09-08T11:58:41Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "88827b25351f",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34222670507",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Walmart Performance reporting now supports daily, weekly, and monthly views for campaigns and keywords.",
+      "highlights": [
+        "Campaign and keyword results include bucket coverage dates and granularity details.",
+        "Item reporting now provides one cumulative row per SKU across the selected date range, including aligned-week metrics.",
+        "Date ranges are clearly clipped at the start and end of reporting periods.",
+        "Added comprehensive version 2 API documentation covering requests, responses, calculations, pagination, sorting, and compatibility guidance."
+      ]
+    },
+    {
       "id": "be-v1.1.62-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -1947,5 +1968,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-08T09:40:42Z"
+  "generated_at": "2026-09-08T13:51:57Z"
 }
