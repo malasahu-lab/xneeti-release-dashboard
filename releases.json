@@ -1,6 +1,97 @@
 {
   "releases": [
     {
+      "id": "be-v1.1.62-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.62-backend",
+      "deployed_at": "2026-09-08T09:09:23Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "5ebf2e0c8024",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34207468463",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added an endpoint to check whether Walmart Performance is enabled for a specific organization.",
+      "highlights": [
+        "Walmart Performance access is now determined by the organization’s manual-report enablement status.",
+        "Enabled and disabled responses now use clear, consistent response formats.",
+        "Added support for organization-specific access checks independent of the current session organization.",
+        "Invalid organization identifiers are now rejected during availability checks.",
+        "Access-check failures default to a disabled response for the current request.",
+        "Added Walmart credential configuration for a previously missed production environment."
+      ]
+    },
+    {
+      "id": "fe-v1.16.7",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.16.7",
+      "deployed_at": "2026-09-08T08:13:10Z",
+      "deployed_by": "yadav-anant",
+      "commit": "7e759709acb3",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34202687529",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Walmart Performance access now reflects organization enablement and eligible roles or accounts.",
+      "highlights": [
+        "Campaign reports support Daily and Weekly views, with weekly date snapping only when applicable.",
+        "Manual uploads use a calendar restricted to current or earlier dates and automatically snap to full weeks.",
+        "Required and selected table columns remain visible, including columns containing only unavailable values.",
+        "Sticky columns are always selected and clearly labeled.",
+        "CSV validation now separates missing and unexpected-column errors.",
+        "Upload success is shown within the upload dialog."
+      ]
+    },
+    {
+      "id": "fe-v1.16.6",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.16.6",
+      "deployed_at": "2026-09-08T07:17:16Z",
+      "deployed_by": "yadav-anant",
+      "commit": "06980a867f98",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34197994484",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Walmart Performance access now reflects organization enablement and eligible roles or accounts.",
+      "highlights": [
+        "Campaign reports support Daily and Weekly views, with weekly date snapping only when applicable.",
+        "Manual uploads use a calendar restricted to current or earlier dates and automatically snap to full weeks.",
+        "Required and selected table columns remain visible, including columns containing only unavailable values.",
+        "Sticky columns are always selected and clearly labeled.",
+        "CSV validation now separates missing and unexpected-column errors.",
+        "Upload success is shown within the upload dialog."
+      ]
+    },
+    {
+      "id": "be-v1.1.61-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.1.61-backend",
+      "deployed_at": "2026-09-08T05:44:25Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "3fca9c9e6756",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34190997791",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added an endpoint to check whether Walmart Performance is enabled for a specific organization.",
+      "highlights": [
+        "Walmart Performance access is now determined by the organization’s manual-report enablement status.",
+        "Enabled and disabled responses now use clear, consistent response formats.",
+        "Added support for organization-specific access checks independent of the current session organization.",
+        "Invalid organization identifiers are now rejected during availability checks.",
+        "Access-check failures default to a disabled response for the current request."
+      ]
+    },
+    {
       "id": "be-v1.1.60-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -1856,5 +1947,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-07T10:15:51Z"
+  "generated_at": "2026-09-08T09:40:42Z"
 }
