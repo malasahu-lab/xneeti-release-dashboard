@@ -1,6 +1,69 @@
 {
   "releases": [
     {
+      "id": "be-v1.2.3-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.3-backend",
+      "deployed_at": "2026-09-10T11:36:37Z",
+      "deployed_by": "gauravtripathi-tech",
+      "commit": "d89981b7b268",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34471445494",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added separate SKU Loss and Day Loss Detail reports with filtering, pagination, diagnostics, and CSV/XLSX exports.",
+      "highlights": [
+        "Added daily loss visibility for inventory availability, out-of-stock, suppression, and buy-box impacts.",
+        "Enhanced Brand reports with remaining prior-year sales and projection basis.",
+        "Added USD sales filtering and improved projection calculations.",
+        "Bid Parting adoption reporting now uses a single reference-day sample.",
+        "Added CSV exports for Walmart Performance Overview, Items, Campaigns, and Keywords screens.",
+        "Supports screen-specific filters, sorting, date-range handling, campaign grouping, and optional granularity."
+      ]
+    },
+    {
+      "id": "be-v1.2.2-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.2-backend",
+      "deployed_at": "2026-09-10T11:14:39Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "8e2b76adf26c",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34469180482",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added separate SKU Loss and Day Loss Detail reports with filtering, pagination, diagnostics, and CSV/XLSX exports.",
+      "highlights": [
+        "Added daily loss visibility for inventory availability, out-of-stock, suppression, and buy-box impacts.",
+        "Enhanced Brand reports with remaining prior-year sales and projection basis.",
+        "Added USD sales filtering and improved projection calculations.",
+        "Bid Parting adoption reporting now uses a single reference-day sample.",
+        "Replaced the former Account Manager rollup with dedicated SKU and Day Loss reports."
+      ]
+    },
+    {
+      "id": "fe-v1.17.1",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.1",
+      "deployed_at": "2026-09-10T11:13:56Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "d5d59e02ca86",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34469525965",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "feat(reports): replace L0 Metrics AM rollup with SKU Loss and Day Loss Detail tabs.",
+      "highlights": [
+        "No pull request description was available, so this is taken from the commit title."
+      ]
+    },
+    {
       "id": "be-v1.2.1-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -2076,5 +2139,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-09T10:06:05Z"
+  "generated_at": "2026-09-10T13:56:34Z"
 }
