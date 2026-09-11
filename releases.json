@@ -1,6 +1,72 @@
 {
   "releases": [
     {
+      "id": "be-v1.2.6-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.6-backend",
+      "deployed_at": "2026-09-11T11:51:48Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "e5d196d35235",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34595382697",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added account bid-parting scorecard capabilities, including account lists, report cards, hourly spend graphs, recommendations, spend suggestions, account-manager filters, and audit-log views.",
+      "highlights": [
+        "Added the ability to apply recommended bid-parting cases across upcoming schedules, with configurable hour blocks and overrides.",
+        "Added scheduling controls for regular and account-level rank scoring jobs.",
+        "Standardized POC role types across support and content workflows.",
+        "Added comprehensive validation and service/controller coverage.",
+        "The projects dashboard now displays projects across organizations instead of limiting results to the currently authenticated organization.",
+        "Existing deleted and archived project visibility rules remain unchanged."
+      ]
+    },
+    {
+      "id": "fe-v1.17.4",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.4",
+      "deployed_at": "2026-09-11T10:00:05Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "293ca7bfae84",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34586351577",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added an admin Bid Dayparting Report with seller search, filters, pagination, and configurable hour blocks.",
+      "highlights": [
+        "Added KPI cards covering seller configuration, working status, performance, and average spend.",
+        "Added organisation details with hourly spend charts, spend comparisons, audit logs, and recommended cases.",
+        "Added controls to review, edit, save, and apply recommended bid-dayparting cases.",
+        "Added the report to admin navigation with permission-based access."
+      ]
+    },
+    {
+      "id": "be-v1.2.5-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.5-backend",
+      "deployed_at": "2026-09-11T09:29:20Z",
+      "deployed_by": "ShivendraSingh-19",
+      "commit": "747329e52aed",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34583575803",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added account bid-parting scorecard capabilities, including account lists, report cards, hourly spend graphs, recommendations, spend suggestions, account-manager filters, and audit-log views.",
+      "highlights": [
+        "Added the ability to apply recommended bid-parting cases across upcoming schedules, with configurable hour blocks and overrides.",
+        "Added scheduling controls for regular and account-level rank scoring jobs.",
+        "Standardized POC role types across support and content workflows.",
+        "Added comprehensive validation and service/controller coverage.",
+        "Bid day-parting updates now record the acting user, affected profiles, source, and field-level changes."
+      ]
+    },
+    {
       "id": "fe-v1.17.3",
       "component": "frontend",
       "component_label": "Frontend",
@@ -2202,5 +2268,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-11T09:07:57Z"
+  "generated_at": "2026-09-11T13:32:00Z"
 }
