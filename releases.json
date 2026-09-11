@@ -1,6 +1,69 @@
 {
   "releases": [
     {
+      "id": "fe-v1.17.3",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.3",
+      "deployed_at": "2026-09-11T07:53:58Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "eafb5b4dadbb",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34575959750",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added an A+ Content workspace for creating, managing, archiving, and restoring projects.",
+      "highlights": [
+        "Added a guided wizard for ASIN lookup, reference-photo selection, layout configuration, themes, and seam options.",
+        "Added project detail views with desktop/mobile previews, version management, section regeneration, settings, downloads, and fullscreen image inspection.",
+        "Added upload preflight checks, generation status tracking, failure guidance, and loading states.",
+        "Added A+ Content navigation with access controls.",
+        "Added project search, filtering, sorting, and localized project details."
+      ]
+    },
+    {
+      "id": "be-v1.2.4-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.4-backend",
+      "deployed_at": "2026-09-11T07:51:02Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "158f1fbaa379",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34575376377",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added A+ Content project management, including ASIN lookup, layout configuration, photo uploads, archiving, and deletion.",
+      "highlights": [
+        "Added AI-assisted desktop and mobile page generation with versioning, section regeneration, selection, and progress tracking.",
+        "Added layout validation, image composition, seam options, accessibility text, and Amazon-ready band downloads.",
+        "Added preflight checks for content quality, claims, image requirements, Premium eligibility, and upload readiness.",
+        "Added Simple, Classic, and Premium presentation tiers.",
+        "Expanded coverage for image processing, layouts, generation workflows, downloads, and validation."
+      ]
+    },
+    {
+      "id": "fe-v1.17.2",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.2",
+      "deployed_at": "2026-09-11T07:46:32Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "bbb71af13aa6",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34575722757",
+      "risk_tag": null,
+      "status": "cancelled",
+      "overview": "Deploy cancelled before it finished — production is still running the previous version, nothing changed.",
+      "highlights": [
+        "Someone stopped this deploy deliberately rather than it breaking.",
+        "Cancelled workflow run: https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34575722757"
+      ]
+    },
+    {
       "id": "be-v1.2.3-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -2139,5 +2202,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-10T13:56:34Z"
+  "generated_at": "2026-09-11T09:07:57Z"
 }
