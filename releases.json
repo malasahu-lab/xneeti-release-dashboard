@@ -1,6 +1,93 @@
 {
   "releases": [
     {
+      "id": "be-v1.2.8-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.8-backend",
+      "deployed_at": "2026-09-14T09:18:43Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "34ce6e40f2a6",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34826382377",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "A+ projects can now be opened by ASIN or project ID across organizational boundaries.",
+      "highlights": [
+        "A+ versions can be preflighted, downloaded, and bundled regardless of organization.",
+        "ASIN lookups consistently select the oldest active project.",
+        "Adoption reporting now identifies organizations using organization IDs, seller IDs, and seller names.",
+        "Added support for recognizing active organizations even when seller profile information is unavailable.",
+        "Bid Parting adoption activity is now measured across a recent seven-day period.",
+        "Deleted projects are excluded from ASIN results."
+      ]
+    },
+    {
+      "id": "be-v1.2.7-ec2",
+      "component": "backend",
+      "component_label": "Backend (EC2 + Scheduler)",
+      "version": "v1.2.7",
+      "deployed_at": "2026-09-14T08:01:20Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "cab0c22f7c45",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34820383633",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added A+ Content project management, including ASIN lookup, layout configuration, photo uploads, archiving, and deletion.",
+      "highlights": [
+        "Added AI-assisted desktop and mobile page generation with versioning, section regeneration, selection, and progress tracking.",
+        "Added layout validation, image composition, seam options, accessibility text, and Amazon-ready band downloads.",
+        "Added preflight checks for content quality, claims, image requirements, Premium eligibility, and upload readiness.",
+        "Added Simple, Classic, and Premium presentation tiers.",
+        "Added a global-admin reporting suite for adoption, payments, L0 metrics, Image Studio, and Content Studio.",
+        "Added filtering, pagination, reporting windows, freshness indicators, and manual refresh controls."
+      ]
+    },
+    {
+      "id": "be-v1.2.7-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.7-backend",
+      "deployed_at": "2026-09-14T07:57:47Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "cab0c22f7c45",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34819607132",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "A+ projects can now be opened by ASIN or project ID across organizational boundaries.",
+      "highlights": [
+        "A+ versions can be preflighted, downloaded, and bundled regardless of organization.",
+        "ASIN lookups consistently select the oldest active project.",
+        "Deleted projects are excluded from ASIN results.",
+        "Missing sections and bands now return empty arrays instead of causing errors.",
+        "Invalid and missing ASINs receive consistent validation and error handling.",
+        "Project creation and settings updates remain limited to the owning organization."
+      ]
+    },
+    {
+      "id": "be-v1.2.6-ec2",
+      "component": "backend",
+      "component_label": "Backend (EC2 + Scheduler)",
+      "version": "v1.2.6",
+      "deployed_at": "2026-09-14T07:41:55Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "e5d196d35235",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34818952179",
+      "risk_tag": null,
+      "status": "failed",
+      "overview": "Deploy failed — production is still running the previous version, nothing changed.",
+      "highlights": [
+        "Failed workflow run (failure): https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34818952179"
+      ]
+    },
+    {
       "id": "be-v1.2.6-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -2268,5 +2355,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-11T13:32:00Z"
+  "generated_at": "2026-09-14T10:50:39Z"
 }
