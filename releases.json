@@ -1,6 +1,153 @@
 {
   "releases": [
     {
+      "id": "be-v1.2.12-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.12-backend",
+      "deployed_at": "2026-09-15T11:43:38Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "c626dbd7d37d",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34963876364",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added a US Year-over-Year Tracker with monthly and weekly reporting views.",
+      "highlights": [
+        "Added manual editing for eligible account metrics.",
+        "Added Excel uploads with dry-run validation, row-level error reporting, and support for clearing values.",
+        "Added CSV and XLSX exports for monthly and weekly reports.",
+        "Added derived ACOS and TACOS metrics, partial-period indicators, and reporting data-through dates.",
+        "US year-over-year reporting now supports accounts linked to multiple advertising profiles.",
+        "Account lists combine synced advertising-profile accounts with manually managed accounts."
+      ]
+    },
+    {
+      "id": "fe-v1.17.7",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.7",
+      "deployed_at": "2026-09-15T11:40:43Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "d50efa0766ce",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34963857789",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "feat(reports): US YoY Tracker tab, with editable manual accounts and Excel upload.",
+      "highlights": [
+        "fix(reports): the tracker populates itself; upload is only for accounts that cannot sync",
+        "fix(reports): show every advertising profile behind a US YoY Tracker row"
+      ]
+    },
+    {
+      "id": "be-v1.2.11-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.11-backend",
+      "deployed_at": "2026-09-15T10:40:22Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "f24b372bd1fe",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34958274996",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added a US Year-over-Year Tracker with monthly and weekly reporting views.",
+      "highlights": [
+        "Added manual editing for eligible account metrics.",
+        "Added Excel uploads with dry-run validation, row-level error reporting, and support for clearing values.",
+        "Added CSV and XLSX exports for monthly and weekly reports.",
+        "Added derived ACOS and TACOS metrics, partial-period indicators, and reporting data-through dates.",
+        "US year-over-year reporting now supports accounts linked to multiple advertising profiles.",
+        "Account lists combine synced advertising-profile accounts with manually managed accounts."
+      ]
+    },
+    {
+      "id": "be-v1.2.10-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.10-backend",
+      "deployed_at": "2026-09-15T09:56:21Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "7b57f8f95df6",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34954259293",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added a US Year-over-Year Tracker with monthly and weekly reporting views.",
+      "highlights": [
+        "Added manual editing for eligible account metrics.",
+        "Added Excel uploads with dry-run validation, row-level error reporting, and support for clearing values.",
+        "Added CSV and XLSX exports for monthly and weekly reports.",
+        "Added derived ACOS and TACOS metrics, partial-period indicators, and reporting data-through dates.",
+        "Added validation for supported periods, metrics, file types, and upload sizes.",
+        "Restricted report access to authorized global administrators."
+      ]
+    },
+    {
+      "id": "fe-v1.17.6",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.6",
+      "deployed_at": "2026-09-15T09:53:34Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "2ed54408dc0f",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34954314082",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "feat(reports): US YoY Tracker tab, with editable manual accounts and Excel upload.",
+      "highlights": [
+        "fix(reports): the tracker populates itself; upload is only for accounts that cannot sync"
+      ]
+    },
+    {
+      "id": "be-v1.2.9-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.9-backend",
+      "deployed_at": "2026-09-15T08:19:09Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "7b57f8f95df6",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/34945352640",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added a US Year-over-Year Tracker with monthly and weekly reporting views.",
+      "highlights": [
+        "Added manual editing for eligible account metrics.",
+        "Added Excel uploads with dry-run validation, row-level error reporting, and support for clearing values.",
+        "Added CSV and XLSX exports for monthly and weekly reports.",
+        "Added derived ACOS and TACOS metrics, partial-period indicators, and reporting data-through dates.",
+        "Added validation for supported periods, metrics, file types, and upload sizes.",
+        "Restricted report access to authorized global administrators."
+      ]
+    },
+    {
+      "id": "fe-v1.17.5",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.5",
+      "deployed_at": "2026-09-15T08:16:44Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "1703280947b4",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34945377778",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "feat(reports): US YoY Tracker tab, with editable manual accounts and Excel upload.",
+      "highlights": [
+        "No pull request description was available, so this is taken from the commit title."
+      ]
+    },
+    {
       "id": "be-v1.2.8-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -2355,5 +2502,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-14T10:50:39Z"
+  "generated_at": "2026-09-15T12:08:28Z"
 }
