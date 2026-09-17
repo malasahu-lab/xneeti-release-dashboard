@@ -32,9 +32,13 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/35207880537",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "feat(reports): freeze the month header on the US YoY Tracker.",
+      "overview": "21 month columns against 78 accounts: scroll down and you are reading a number with no idea which month it belongs to.",
       "highlights": [
-        "No pull request description was available, so this is taken from the commit title."
+        "ui/table already marks <thead> as sticky top-0 — and it did nothing here.",
+        "Bounding the wrapper to 70vh is what gives it something to stick to.",
+        "70vh rather than a fixed pixel height so the table stays usable on a laptop and still earns the extra rows on a large monitor.",
+        "Behind a freezeHeader prop rather than on by default, because it changes how a tab scrolls and only earns that on tables long and wide enough to lose the header.",
+        "feat(reports): freeze the month header on the US YoY Tracker."
       ]
     },
     {
@@ -222,9 +226,13 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34945377778",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "feat(reports): US YoY Tracker tab, with editable manual accounts and Excel upload.",
+      "overview": "Adds the US YoY Tracker tab — the first reporting surface in the product that writes.",
       "highlights": [
-        "No pull request description was available, so this is taken from the commit title."
+        "Pairs with XNeetiTech/xneeti-monolith#1725 — merge that first; these routes 404 without it.",
+        "Mockup you reviewed: https://claude.ai/code/artifact/c3241e66-836f-4721-ba01-789d944952b2",
+        "A cell is editable only when the account has no advertising profile.",
+        "That is a correctness rule, not a permissions one.",
+        "feat(reports): US YoY Tracker tab, with editable manual accounts and Excel upload."
       ]
     },
     {
@@ -501,9 +509,13 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/34469525965",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "feat(reports): replace L0 Metrics AM rollup with SKU Loss and Day Loss Detail tabs.",
+      "overview": "Replaces the L0 Metrics AM rollup tab with the reference workbook's two loss-detail sheets, and surfaces the new projection basis on the brand tab.",
       "highlights": [
-        "No pull request description was available, so this is taken from the commit title."
+        "Pairs with XNeetiTech/xneeti-monolith#1717.",
+        "Hours and money side by side for each of the three loss causes.",
+        "A blank run rate renders as an explained absence with a tooltip, never as a zero: \"fewer than seven in-stock days of evidence\" is not the same as \"lost nothing\", and a blank in a money column reads as the latter unless it says otherwise.",
+        "Stock renders as three states, not two — in stock, out of stock, and not reported.",
+        "feat(reports): replace L0 Metrics AM rollup with SKU Loss and Day Loss Detail tabs."
       ]
     },
     {
@@ -870,9 +882,13 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/33846141696",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "feature/xneeti-3095: changes in get campaign and get keyword performance.",
+      "overview": "Why: the Ads Item export has no date column, so the Campaign screen could only ever be weekly and needed an operator-entered week.",
       "highlights": [
-        "No pull request description was available, so this is taken from the commit title."
+        "GET /walmart-performance/v1/campaigns",
+        "Accepted trade-off, documented in the method comment and worth a reviewer's eye: the Keyword export only contains campaigns that had keyword-level activity.",
+        "Columns: bid removed (a bid is a keyword-level setting, meaningless at campaign grain), along with sku, itemId, itemName, adGroupCount (no item grain in the source).",
+        "GET /walmart-performance/v1/keywords",
+        "feature/xneeti-3095: changes in get campaign and get keyword performance."
       ]
     },
     {
@@ -1055,9 +1071,13 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32955192559",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "feat(search-term): adopt the new search-term contract.",
+      "overview": "@xneetitech/common@1.0.0-alpha.52 removes KwhSyncJob, XneetiQueues.KEYWORDHARVESTINGSYNC and TargetingStatus, which this repo imported.",
       "highlights": [
-        "No pull request description was available, so this is taken from the commit title."
+        "Bumps: common alpha.51 → alpha.52, db alpha.4 → alpha.5.",
+        "No frontend calls it (API-key protected, invoked out of band — I checked), but saved scripts, Postman collections and runbooks need the new path.",
+        "src/shared/entities/keywordHarvesting is deleted.",
+        "The rename is catalog-only — no rows are copied, and rows, indexes, constraints and FKs all follow the table.",
+        "feat(search-term): adopt the new search-term contract."
       ]
     },
     {
@@ -1092,9 +1112,13 @@
       "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/32942334992",
       "risk_tag": "chore",
       "status": "success",
-      "overview": "chore(deps): pin @xneetitech/* to exact versions.",
+      "overview": "Caret ranges on prerelease versions silently accept the next alpha.",
       "highlights": [
-        "No pull request description was available, so this is taken from the commit title."
+        "So any yarn install (CI, a fresh clone, an unrelated branch) pulls a newly published alpha without anyone asking for it.",
+        "Pinning turns that upgrade into an explicit, reviewable commit instead of a side effect of installing.",
+        "@xneetitech/ dependencies move from caret to exact.",
+        "The resolved versions are unchanged, so this is a no-op for the running services.",
+        "chore(deps): pin @xneetitech/* to exact versions."
       ]
     },
     {
