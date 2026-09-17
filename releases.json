@@ -1,6 +1,93 @@
 {
   "releases": [
     {
+      "id": "fe-v1.17.12",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.12",
+      "deployed_at": "2026-09-17T12:11:05Z",
+      "deployed_by": "akshatgoyalxneeti",
+      "commit": "4212c1abfa74",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/35218995672",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added an invoice search view for administrators across organisations.",
+      "highlights": [
+        "Added filters for invoice number, organisation, status, type, and month.",
+        "Added paginated results with totals for the complete filtered set.",
+        "Cancelled invoices are included in search results.",
+        "Added navigation between organisation, invoice, and check administration views.",
+        "Selecting an invoice opens the relevant organisation’s details.",
+        "Added organization and brand-name filtering to several admin reports, with accent-insensitive, case-insensitive search, match counts, and clear controls."
+      ]
+    },
+    {
+      "id": "be-v1.2.16-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.16-backend",
+      "deployed_at": "2026-09-17T11:21:49Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "d37d8a17bcea",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/35214439885",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Six read-only endpoints under GET /api/admin/invoicing/, backing the internal invoicing console at /admin/invoicing (frontend PR: XNeetiTech/xneeti-frontend#1501).",
+      "highlights": [
+        "InvoicingAdminGuard resolves GLOBALADMIN from the database on every request via isGlobalAdminUncached — not from the token's ga claim, and not from the Redis role cache.",
+        "This follows the admin-reports precedent (#c7cc793) but tightens it two ways:",
+        "Org-scoped RBAC cannot express this: these routes deliberately read across organisations and take no orgId from the caller, so there is nothing to scope against.",
+        "XneetiConfig.invoicingAdmins (the existing singleton Mongo config document) narrows it further when non-empty.",
+        "feat(admin-invoicing): read-only cross-org invoicing API behind a live GLOBAL_ADMIN check."
+      ]
+    },
+    {
+      "id": "fe-v1.17.11",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.11",
+      "deployed_at": "2026-09-17T10:55:35Z",
+      "deployed_by": "akshatgoyalxneeti",
+      "commit": "e67c38a554d6",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/35212296379",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added organization and brand-name filtering to several admin reports, with accent-insensitive, case-insensitive search, match counts, and clear controls.",
+      "highlights": [
+        "Filtered results now update report tables and related KPIs across adoption, brand, payment, and tracker views.",
+        "Added frozen table headers to improve navigation in supported reports.",
+        "Large tables retain the standard layout unless they exceed the configured row threshold, helping preserve efficient scrolling and readability."
+      ]
+    },
+    {
+      "id": "be-v1.2.15-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.15-backend",
+      "deployed_at": "2026-09-17T10:49:53Z",
+      "deployed_by": "akshatgoyalxneeti",
+      "commit": "21ed4f551853",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/35211754852",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Six read-only endpoints under GET /api/admin/invoicing/, backing the internal invoicing console at /admin/invoicing (frontend PR: XNeetiTech/xneeti-frontend#1501).",
+      "highlights": [
+        "InvoicingAdminGuard resolves GLOBALADMIN from the database on every request via isGlobalAdminUncached — not from the token's ga claim, and not from the Redis role cache.",
+        "This follows the admin-reports precedent (#c7cc793) but tightens it two ways:",
+        "Org-scoped RBAC cannot express this: these routes deliberately read across organisations and take no orgId from the caller, so there is nothing to scope against.",
+        "XneetiConfig.invoicingAdmins (the existing singleton Mongo config document) narrows it further when non-empty.",
+        "feat(admin-invoicing): read-only cross-org invoicing API behind a live GLOBAL_ADMIN check."
+      ]
+    },
+    {
       "id": "be-v1.2.14-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -2606,5 +2693,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-17T10:11:05Z"
+  "generated_at": "2026-09-17T12:52:47Z"
 }
