@@ -1,6 +1,43 @@
 {
   "releases": [
     {
+      "id": "be-v1.2.14-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.14-backend",
+      "deployed_at": "2026-09-17T10:09:09Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "c106595371ac",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/35207896208",
+      "risk_tag": "bugfix",
+      "status": "success",
+      "overview": "Updated the US YoY Tracker to exclude designated profiles, preventing duplicate sales and unrelated storefront advertising spend from affecting totals.",
+      "highlights": [
+        "Improved multi-profile calculations so total sales remain represented once while advertising spend continues to aggregate correctly.",
+        "Extended historical reporting for profile-less accounts through August 2026 while preserving existing monthly values."
+      ]
+    },
+    {
+      "id": "fe-v1.17.9",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.9",
+      "deployed_at": "2026-09-17T10:04:50Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "605d8873fcc1",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/35207880537",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "feat(reports): freeze the month header on the US YoY Tracker.",
+      "highlights": [
+        "No pull request description was available, so this is taken from the commit title."
+      ]
+    },
+    {
       "id": "fe-v1.17.8",
       "component": "frontend",
       "component_label": "Frontend",
@@ -2545,5 +2582,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-16T14:56:20Z"
+  "generated_at": "2026-09-17T10:11:05Z"
 }
