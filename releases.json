@@ -1,6 +1,75 @@
 {
   "releases": [
     {
+      "id": "be-v1.2.18-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.18-backend",
+      "deployed_at": "2026-09-18T07:46:42Z",
+      "deployed_by": "amank0753",
+      "commit": "f932ec127cd3",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/35320374815",
+      "risk_tag": "hotfix",
+      "status": "success",
+      "overview": "Added asynchronous AI brief generation for Image Studio, including ASIN brand lookup and progress retrieval.",
+      "highlights": [
+        "Initial requests now generate up to 10 slots, with support for PDP images and visual direction.",
+        "Added slot-level AI brief indicators in job details.",
+        "Added one-time slot regeneration per ASIN, preserving the original request context.",
+        "Improved error responses and Amazon image lookup handling.",
+        "Increased the maximum enabled ASINs per organization from 50 to 2,000.",
+        "Brief slot types are now accepted as non-empty text without being restricted to a predefined set of image types."
+      ]
+    },
+    {
+      "id": "fe-v1.17.13",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.13",
+      "deployed_at": "2026-09-18T05:48:02Z",
+      "deployed_by": "pranjalvarshney",
+      "commit": "b25ad1243606",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/35311564599",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added AI-generated creative briefs with progress tracking, conflict recovery, regeneration, and resume support.",
+      "highlights": [
+        "Added brand-specific visual direction editing with validation, character counts, save, skip, and retry actions.",
+        "Added AI-suggested image selections, image-type controls, research details, and per-slot or per-ASIN controls.",
+        "Added manual image-type editing, slot removal, and clearer slot status indicators.",
+        "Added support for preserving generated brief details when creating jobs.",
+        "Improved restoration of in-progress brief generation before displaying job-flow content.",
+        "Improved handling of missing image types and unavailable product images."
+      ]
+    },
+    {
+      "id": "be-v1.2.17-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.17-backend",
+      "deployed_at": "2026-09-18T05:43:26Z",
+      "deployed_by": "amank0753",
+      "commit": "deae4a33fc69",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/35311316213",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added asynchronous AI brief generation for Image Studio, including ASIN brand lookup and progress retrieval.",
+      "highlights": [
+        "Initial requests now generate up to 10 slots, with support for PDP images and visual direction.",
+        "Added slot-level AI brief indicators in job details.",
+        "Added one-time slot regeneration per ASIN, preserving the original request context.",
+        "Improved error responses and Amazon image lookup handling.",
+        "Increased the maximum enabled ASINs per organization from 50 to 2,000.",
+        "Added validation for supported image types and Amazon listing slot limits."
+      ]
+    },
+    {
       "id": "fe-v1.17.12",
       "component": "frontend",
       "component_label": "Frontend",
@@ -2693,5 +2762,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-17T12:52:47Z"
+  "generated_at": "2026-09-18T10:02:38Z"
 }
