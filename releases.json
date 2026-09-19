@@ -1,6 +1,65 @@
 {
   "releases": [
     {
+      "id": "be-v1.2.20-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.20-backend",
+      "deployed_at": "2026-09-19T12:42:09Z",
+      "deployed_by": "amank0753",
+      "commit": "663449067204",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/35443328727",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Everything is behind IMAGESTUDIOQAGATEENABLED (default false).",
+      "highlights": [
+        "Checker Agent first draft."
+      ]
+    },
+    {
+      "id": "fe-v1.17.14",
+      "component": "frontend",
+      "component_label": "Frontend",
+      "version": "v1.17.14",
+      "deployed_at": "2026-09-19T11:48:02Z",
+      "deployed_by": "yadav-anant",
+      "commit": "43b5ce27d1cd",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-frontend/actions/runs/35440764485",
+      "risk_tag": "feature",
+      "status": "success",
+      "overview": "Added automated QA checks before job approval, including status polling, progress, findings, rerun, failure, and override workflows.",
+      "highlights": [
+        "Added QA feedback views with severity grouping, issue counts, version details, and “Add to feedback” actions.",
+        "Added AI Human tagging indicators and a confirmation dialog to retain or remove disclosures.",
+        "Added role-based visibility for QA feedback and issue badges.",
+        "Amazon uploads now use tagged image renditions when applicable.",
+        "Refined detail sections, image cards, badges, and QA status messaging.",
+        "Added coverage for QA findings, feedback matching, and submission decisions."
+      ]
+    },
+    {
+      "id": "be-v1.2.19-backend",
+      "component": "backend",
+      "component_label": "Backend (ECS)",
+      "version": "v1.2.19-backend",
+      "deployed_at": "2026-09-19T11:38:56Z",
+      "deployed_by": "amank0753",
+      "commit": "663449067204",
+      "ref": "master",
+      "ref_inferred": false,
+      "run_url": "https://github.com/XNeetiTech/xneeti-monolith/actions/runs/35440138842",
+      "risk_tag": "chore",
+      "status": "success",
+      "overview": "Everything is behind IMAGESTUDIOQAGATEENABLED (default false).",
+      "highlights": [
+        "Checker Agent first draft."
+      ]
+    },
+    {
       "id": "be-v1.2.18-backend",
       "component": "backend",
       "component_label": "Backend (ECS)",
@@ -2762,5 +2821,5 @@
       "status": "success"
     }
   ],
-  "generated_at": "2026-09-18T10:02:38Z"
+  "generated_at": "2026-09-19T13:15:53Z"
 }
